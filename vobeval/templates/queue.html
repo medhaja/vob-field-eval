@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Review queue{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Review queue</h1>
+    <p class="lede">{{ flagged|length }} of {{ total }} cases need a person at threshold {{ '%.2f'|format(t) }}
+      ({{ pct(flagged|length / total if total else 0, 0) }}). Highest risk first: failed rules weigh most, then the weakest field’s confidence.</p>
+  </div>
+</div>
+<div class="toolbar">
+  <div class="seg" role="group" aria-label="Prompt version">
+    {% for ver in VERSIONS %}<a href="/queue?v={{ ver }}&t={{ t }}" class="{{ 'on' if ver == v }}">Prompt {{ ver }}</a>{% endfor %}
+  </div>
+  <form class="inline-form" method="get" action="/queue">
+    <input type="hidden" name="v" value="{{ v }}">
+    <label class="small muted" for="tq">Threshold</label>
+    <select id="tq" name="t" onchange="this.form.submit()">
+      {% for i in range(0, 21) %}{% set x = (i * 0.05)|round(2) %}
+      <option value="{{ x }}" {{ 'selected' if (x - t)|abs < 0.001 }}>{{ '%.2f'|format(x) }}</option>{% endfor %}
+    </select>
+  </form>
+</div>
+
+<section class="card flush">
+  <table class="list queue">
+    <thead>
+      <tr><th>Risk</th><th>Case</th><th>Payer</th><th>Why it is here</th><th class="num">Weakest field</th><th>Scenario <span class="muted small">(demo label)</span></th></tr>
+    </thead>
+    <tbody>
+      {% for d in flagged %}
+      {% set c = cases[d.case_id] %}
+      <tr class="clickable" onclick="location.href='/case/{{ d.case_id }}?v={{ v }}&t={{ t }}'">
+        <td><div class="risk"><span class="risk-bar"><span style="width: {{ d.risk }}%" class="{{ 'hi' if d.risk >= 60 else 'mid' if d.risk >= 30 else 'lo' }}"></span></span><span class="risk-num">{{ d.risk|round|int }}</span></div></td>
+        <td class="nowrap"><a href="/case/{{ d.case_id }}?v={{ v }}&t={{ t }}"><code>{{ d.case_id }}</code></a>
+          {% if d.case_id in reviewed %}<span class="pill ok">reviewed</span>{% endif %}</td>
+        <td>{{ PAYERS[c.payer_id].name }}</td>
+        <td class="reasons">
+          {% for f in d.failures|map(attribute='title')|unique %}<span class="pill fail">{{ f }}</span>{% endfor %}
+          {% if d.low_confidence %}<span class="pill low">{{ d.low_confidence|length }} low-confidence field{{ 's' if d.low_confidence|length != 1 }}</span>{% endif %}
+        </td>
+        <td class="num">{{ '%.2f'|format(d.min_confidence) }}</td>
+        <td><span class="muted small">{{ SCENARIO_LABELS.get(c.scenario, c.scenario) }}</span></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="empty">Nothing to review at this threshold. Every case is auto-approved.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

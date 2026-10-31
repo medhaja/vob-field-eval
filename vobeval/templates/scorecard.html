@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Scorecard{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Field-level accuracy</h1>
+    <p class="lede">Every benefits verification has 68 separate fields (4 plan-level, 8 for each of CPT 97151–97158).
+      A case-level “correct” score hides where the errors are. This breaks accuracy out by payer and field.</p>
+  </div>
+</div>
+<div id="scorecard">
+  {% include "_scorecard_body.html" %}
+</div>
+{% endblock %}

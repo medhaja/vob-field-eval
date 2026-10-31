@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}A/B test{% endblock %}
+{% macro ci_bar(r) -%}
+  {# Scale: -50 to +50 percentage points, centred on zero. #}
+  {% set lo = [[r.ci_low * 100, -50]|max, 50]|min %}
+  {% set hi = [[r.ci_high * 100, -50]|max, 50]|min %}
+  {% set mid = [[r.delta * 100, -50]|max, 50]|min %}
+  <div class="ci" title="95% CI {{ signed_pts(r.ci_low) }} to {{ signed_pts(r.ci_high) }}">
+    <span class="ci-zero"></span>
+    <span class="ci-range {{ r.verdict|replace(' ', '-') }}" style="left: {{ 50 + lo }}%; width: {{ [hi - lo, 0.6]|max }}%"></span>
+    <span class="ci-dot {{ r.verdict|replace(' ', '-') }}" style="left: {{ 50 + mid }}%"></span>
+  </div>
+{%- endmacro %}
+{% macro verdict(r) -%}
+  <span class="pill {{ 'ok' if r.verdict == 'better' else 'fail' if r.verdict == 'worse' else 'neutral' }}">{{ r.verdict }}</span>
+{%- endmacro %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Prompt A/B: v1 vs v2</h1>
+    <p class="lede">Cases are split 50/50 by a seeded hash of the case ID ({{ ab.arm_sizes.v1 }} to v1, {{ ab.arm_sizes.v2 }} to v2),
+      the way live traffic would be. Deltas are v2 minus v1 field accuracy, with a 95% bootstrap CI that resamples whole cases.</p>
+  </div>
+</div>
+
+<div class="decision {{ ab.hint.decision }}">
+  <div class="decision-word">{{ ab.hint.decision|upper }}</div>
+  <div>
+    <strong>{{ ab.hint.reason }}</strong>
+    {% if ab.hint.worse %}<div class="small">Regressions:
+      {% for r in ab.hint.worse %}{{ (PAYERS[r.payer_id].name ~ ' · ') if r.payer_id }}{{ FIELD_LABELS[r.field] }} ({{ signed_pts(r.delta) }}){{ ', ' if not loop.last }}{% endfor %}</div>{% endif %}
+    {% if ab.hint.better %}<div class="small">Improvements:
+      {% for r in ab.hint.better %}{{ FIELD_LABELS[r.field] }} ({{ signed_pts(r.delta) }}){{ ', ' if not loop.last }}{% endfor %}</div>{% endif %}
+  </div>
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>Per-field deltas, all payers</h2><span class="muted small">CI axis: −50 to +50 points</span></div>
+  <table class="list ab">
+    <thead><tr><th>Field</th><th class="num">v1</th><th class="num">v2</th><th class="num">Delta</th><th class="num">95% CI</th><th class="ci-col"></th><th>Verdict</th></tr></thead>
+    <tbody>
+      {% for r in ab.by_field %}
+      <tr><td>{{ FIELD_LABELS[r.field] }}</td>
+        <td class="num">{{ pct(r.acc_v1) }}</td><td class="num">{{ pct(r.acc_v2) }}</td>
+        <td class="num"><strong>{{ signed_pts(r.delta) }}</strong></td>
+        <td class="num muted">{{ ci_text(r) }}</td>
+        <td class="ci-col">{{ ci_bar(r) }}</td><td>{{ verdict(r) }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <div class="card-head"><h2>Significant changes by payer</h2><span class="muted small">a fleet-wide average can hide a single-payer regression</span></div>
+  <table class="list ab">
+    <thead><tr><th>Payer</th><th>Field</th><th class="num">v1</th><th class="num">v2</th><th class="num">Delta</th><th class="num">95% CI</th><th class="ci-col"></th><th>Verdict</th></tr></thead>
+    <tbody>
+      {% for r in notable %}
+      <tr><td>{{ PAYERS[r.payer_id].name }}</td><td>{{ FIELD_LABELS[r.field] }}</td>
+        <td class="num">{{ pct(r.acc_v1) }}</td><td class="num">{{ pct(r.acc_v2) }}</td>
+        <td class="num"><strong>{{ signed_pts(r.delta) }}</strong></td>
+        <td class="num muted">{{ ci_text(r) }}</td>
+        <td class="ci-col">{{ ci_bar(r) }}</td><td>{{ verdict(r) }}</td></tr>
+      {% else %}<tr><td colspan="8" class="empty">No payer-level change is significant.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+  <details class="all-rows">
+    <summary>All {{ ab.by_payer|length }} payer × field rows</summary>
+    <table class="list compact ab">
+      <thead><tr><th>Payer</th><th>Field</th><th class="num">v1</th><th class="num">v2</th><th class="num">Delta</th><th class="num">95% CI</th><th>Verdict</th></tr></thead>
+      <tbody>{% for r in ab.by_payer %}
+        <tr><td>{{ PAYERS[r.payer_id].name }}</td><td>{{ FIELD_LABELS[r.field] }}</td><td class="num">{{ pct(r.acc_v1) }}</td><td class="num">{{ pct(r.acc_v2) }}</td>
+          <td class="num">{{ signed_pts(r.delta) }}</td><td class="num muted">{{ ci_text(r) }}</td><td>{{ verdict(r) }}</td></tr>
+      {% endfor %}</tbody>
+    </table>
+  </details>
+</section>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Threshold{% endblock %}
+{% block head %}<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" defer></script>{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Review threshold</h1>
+    <p class="lede">A case is auto-approved only if every field’s confidence is at or above the threshold and no rule fails.
+      Raise the threshold and fewer errors slip through, but more cases go to a person.</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="seg" role="group" aria-label="Prompt version">
+    {% for ver in VERSIONS %}<a href="/threshold?v={{ ver }}&t={{ t }}" class="{{ 'on' if ver == v }}" data-version-link="{{ ver }}">Prompt {{ ver }}</a>{% endfor %}
+  </div>
+  <span class="muted small">{{ n_cases }} synthetic cases · staffing shown at {{ CASES_PER_DAY }} cases/day</span>
+</div>
+
+<section class="card">
+  <div class="slider-row">
+    <label for="t" class="slider-label">Confidence threshold <output id="t-out">{{ '%.2f'|format(t) }}</output></label>
+    <input id="t" type="range" min="0" max="1" step="0.05" value="{{ t }}">
+  </div>
+  <div class="tiles tiles-tight">
+    <div class="tile"><div class="tile-label">Auto-approved</div><div class="tile-value" id="m-auto">—</div><div class="tile-note" id="m-auto-n"></div></div>
+    <div class="tile"><div class="tile-label">Escaped errors</div><div class="tile-value" id="m-esc">—</div><div class="tile-note">auto-approved with a wrong field, share of all cases</div></div>
+    <div class="tile"><div class="tile-label">Errored cases caught</div><div class="tile-value" id="m-caught">—</div><div class="tile-note">sent to review before anyone acts</div></div>
+    <div class="tile accent"><div class="tile-label">Cases to staff per day</div><div class="tile-value" id="m-staff">—</div><div class="tile-note">of {{ CASES_PER_DAY }} a day</div></div>
+  </div>
+  <div class="chart-box"><canvas id="sweep" aria-label="Automation rate and escaped-error rate by threshold" role="img"></canvas></div>
+  <p class="muted small" id="baseline-note"></p>
+  <p><a class="button" id="queue-link" href="/queue?v={{ v }}&t={{ t }}">Open the review queue at this threshold →</a></p>
+</section>
+
+<section class="card">
+  <div class="card-head"><h2>Every 0.05 step</h2></div>
+  <div class="table-scroll">
+  <table class="list compact" id="sweep-table">
+    <thead><tr><th class="num">Threshold</th><th class="num">Auto-approved</th><th class="num">Escaped errors</th><th class="num">Errors caught</th><th class="num">To staff / day</th></tr></thead>
+    <tbody>
+      {% for p in sweeps[v] %}
+      <tr data-t="{{ p.threshold }}"><td class="num">{{ '%.2f'|format(p.threshold) }}</td><td class="num">{{ pct(p.automation_rate) }}</td><td class="num">{{ pct(p.escaped_error_rate) }}</td><td class="num">{{ pct(p.errors_caught) }}</td><td class="num">{{ p.review_per_day }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+<script id="sweep-data" type="application/json">{{ {"sweeps": sweeps, "baselines": baselines, "v": v, "perDay": CASES_PER_DAY}|tojson }}</script>
+{% endblock %}
+{% block scripts %}<script src="/static/threshold.js" defer></script>{% endblock %}

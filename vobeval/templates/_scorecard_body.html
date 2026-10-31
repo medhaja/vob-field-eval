@@ -1,0 +1,107 @@
+{% set s = sc.summary %}
+<div class="toolbar">
+  <div class="seg" role="group" aria-label="Prompt version">
+    {% for ver in VERSIONS %}
+    <a href="/?v={{ ver }}&model={{ model }}" class="{{ 'on' if ver == v }}"
+       hx-get="/partials/scorecard?v={{ ver }}&model={{ model }}" hx-target="#scorecard" hx-push-url="/?v={{ ver }}&model={{ model }}">
+      Prompt {{ ver }}</a>
+    {% endfor %}
+  </div>
+  {% if models|length > 1 %}
+  <div class="seg" role="group" aria-label="Extractor">
+    {% for m in models %}
+    <a href="/?v={{ v }}&model={{ m }}" class="{{ 'on' if m == model }}"
+       hx-get="/partials/scorecard?v={{ v }}&model={{ m }}" hx-target="#scorecard" hx-push-url="/?v={{ v }}&model={{ m }}">{{ m }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <span class="muted small">Extractor: <code>{{ model }}</code> · {{ s.cases }} cases · {{ "{:,}".format(s.fields) }} scored fields</span>
+</div>
+
+<div class="tiles">
+  <div class="tile">
+    <div class="tile-label">Field accuracy</div>
+    <div class="tile-value">{{ pct(s.field_accuracy) }}</div>
+    <div class="tile-note">exact match after normalizing $ and %</div>
+  </div>
+  <div class="tile">
+    <div class="tile-label">Cases with every field right</div>
+    <div class="tile-value">{{ pct(s.case_accuracy, 0) }}</div>
+    <div class="tile-note">the same errors, counted per case</div>
+  </div>
+  <div class="tile">
+    <div class="tile-label">Auto-approved at {{ DEFAULT_THRESHOLD }}</div>
+    <div class="tile-value">{{ pct(sc.routing.automation_rate, 0) }}</div>
+    <div class="tile-note">{{ sc.routing.review_per_day }} of {{ CASES_PER_DAY }}/day go to staff</div>
+  </div>
+  <div class="tile">
+    <div class="tile-label">Escaped errors</div>
+    <div class="tile-value">{{ pct(sc.routing.escaped_error_rate) }}</div>
+    <div class="tile-note">auto-approved cases with a wrong field</div>
+  </div>
+</div>
+
+{% if sc.comparison %}
+<div class="callout">
+  Same {{ sc.comparison.cases }} cases with the mock extractor: field accuracy {{ pct(sc.comparison.field_accuracy) }},
+  every field right {{ pct(sc.comparison.case_accuracy, 0) }}.
+</div>
+{% endif %}
+
+<section class="card">
+  <div class="card-head">
+    <h2>Accuracy by payer × field</h2>
+    <div class="legend small">
+      <span class="sw h1"></span>&lt;90%
+      <span class="sw h2"></span>90–95
+      <span class="sw h3"></span>95–98
+      <span class="sw h4"></span>98–99.5
+      <span class="sw h5"></span>≥99.5%
+    </div>
+  </div>
+  <div class="table-scroll">
+  <table class="heatmap">
+    <thead>
+      <tr>
+        <th class="left">Payer</th>
+        {% for f in FIELD_NAMES %}<th title="{{ f }}">{{ FIELD_LABELS[f] }}{% if loop.index <= 4 %}<span class="th-sub">plan</span>{% endif %}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for payer_id, cells in sc.heatmap.items() %}
+      <tr>
+        <th class="left payer-name">{{ PAYERS[payer_id].name }}<span class="th-sub">{{ PAYERS[payer_id].kind|replace('_', ' ')|replace('mco', 'MCO')|replace('tpa', 'TPA') }}</span></th>
+        {% for f in FIELD_NAMES %}
+          {% set c = cells.get(f) %}
+          {% if c %}
+          <td class="{{ heat_class(c.accuracy) }}" title="{{ c.correct }} of {{ c.n }} correct">{{ pct(c.accuracy, 1) }}</td>
+          {% else %}<td class="na">—</td>{% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <h2>Worst five payer × CPT × field cells</h2>
+    <span class="muted small">where to look first</span>
+  </div>
+  <table class="list">
+    <thead><tr><th>Payer</th><th>CPT</th><th>Field</th><th class="num">Correct</th><th class="num">Accuracy</th><th></th></tr></thead>
+    <tbody>
+      {% for w in sc.worst %}
+      <tr>
+        <td class="nowrap">{{ PAYERS[w.payer_id].name }}</td>
+        <td>{% if w.cpt == 'plan' %}<span class="muted">plan-level</span>{% else %}<code>{{ w.cpt }}</code> <span class="muted small">{{ CPT_DESCRIPTIONS[w.cpt] }}</span>{% endif %}</td>
+        <td>{{ FIELD_LABELS[w.field] }}</td>
+        <td class="num">{{ w.correct }} / {{ w.n }}</td>
+        <td class="num"><strong>{{ pct(w.accuracy) }}</strong></td>
+        <td class="bar-cell"><div class="bar"><span style="width: {{ (w.accuracy * 100)|round(1) }}%"></span></div></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>

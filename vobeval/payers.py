@@ -89,7 +89,7 @@ PAYERS: dict[str, PayerRules] = {
     ),
     "harbor": PayerRules(
         payer_id="harbor",
-        name="Harbor Employer Plan (administered by Lakeside TPA)",
+        name="Harbor Employer Plan",
         kind="tpa",
         cost_share="coinsurance",
         auth_required=frozenset({"97153", "97154"}),

@@ -164,6 +164,8 @@ def render(rng: random.Random, case_id: str, p: PayerRules, edge: str, gold: dic
                f"  (UPDATED - previous ID {request_member_id} retired 2026-09-01)")
     else:
         d.line("Member ID: ", (gold["meta.member_id"], "meta.member_id"), "    Relationship: Dependent")
+    if p.kind == "tpa":
+        d.line("Plan administrator: Lakeside TPA (self-funded employer plan)")
     d.line("Service type: Behavioral health - Applied Behavior Analysis (in-network)")
     d.line("")
 

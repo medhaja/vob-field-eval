@@ -29,11 +29,12 @@ class Decision:
 
     @property
     def risk(self) -> float:
-        """0-100 score for sorting the review queue: rule failures weigh most,
-        then how far the weakest field sits below full confidence."""
+        """0-100 score for sorting the review queue. Starts from the weakest
+        field's confidence; each distinct failed rule and each low-confidence
+        field discounts it further. 0 = nothing suspicious."""
         rules = len({f.rule_id for f in self.failures})
-        score = 0.35 * rules + (1 - self.min_confidence) + 0.02 * len(self.low_confidence)
-        return round(100 * min(1.0, score), 1)
+        trust = self.min_confidence * (0.7 ** rules) * (0.98 ** len(self.low_confidence))
+        return round(100 * (1 - trust), 1)
 
     @property
     def reasons(self) -> list[str]:

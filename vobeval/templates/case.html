@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}{{ case.case_id }}{% endblock %}
+{% macro cell(f, compact=false) -%}
+  <div class="fcell {{ f.status }}{{ ' wrong' if not f.matches_gold }}" data-key="{{ f.key }}">
+    <input name="f__{{ f.key }}" value="{{ f.input }}" aria-label="{{ f.key }}" class="{{ 'err' if errors.get(f.key) }}"
+           title="{{ f.key }} · confidence {{ '%.3f'|format(f.confidence) }}{{ '' if f.has_source else ' · no source span' }}">
+    <span class="conf">{{ f.conf_display }}</span>
+    <span class="gold-check" title="Current gold label: {{ f.gold_display }}">{{ '✓' if f.matches_gold else '✗ gold: ' ~ f.gold_display }}</span>
+    {% if errors.get(f.key) %}<span class="field-err">{{ errors[f.key] }}</span>{% endif %}
+  </div>
+{%- endmacro %}
+{% block content %}
+<div class="crumbs"><a href="/queue?v={{ v }}&t={{ t }}">← Review queue</a></div>
+<div class="page-head case-head">
+  <div>
+    <h1><code>{{ case.case_id }}</code> · {{ payer.name }}</h1>
+    <p class="lede">Prompt {{ result.prompt_version }} · extractor <code>{{ result.model }}</code> · {{ '%.1f'|format(result.latency_ms) }} ms ·
+      requested member ID <code>{{ case.request_member_id }}</code>
+      {% if decision.needs_review %}<span class="pill fail">needs review</span>{% else %}<span class="pill ok">auto-approved</span>{% endif %}
+      <span class="muted small">scenario: {{ SCENARIO_LABELS.get(case.scenario, case.scenario) }}</span></p>
+  </div>
+  <label class="toggle small"><input type="checkbox" id="reveal-gold"> Show gold labels (demo only)</label>
+</div>
+
+{% if flash %}
+<div class="callout ok">
+  Saved {{ flash.saved }} gold label{{ 's' if flash.saved != 1 }} with <code>source=human</code>.
+  {% if flash.before is not none %}Field accuracy for prompt {{ v }} recomputed: {{ pct(flash.before, 2) }} → {{ pct(flash.after, 2) }}.{% endif %}
+</div>
+{% endif %}
+{% if errors %}<div class="callout bad">Some values could not be read. Fix the highlighted fields and save again.</div>{% endif %}
+
+{% if decision.failures %}
+<section class="card rules">
+  <h2>Failed rules</h2>
+  <ul class="rule-list">
+    {% for f in decision.failures %}
+    <li><span class="pill fail">{{ f.rule_id }}</span> <strong>{{ f.title }}.</strong> {{ f.message }}
+      <span class="keys">{% for k in f.field_keys[:6] %}<a href="#" class="key-link" data-key="{{ k }}"><code>{{ k }}</code></a>{% endfor %}{% if f.field_keys|length > 6 %} <span class="muted">+{{ f.field_keys|length - 6 }} more</span>{% endif %}</span></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<div class="split">
+  <section class="card doc-card">
+    <div class="card-head"><h2>Benefits document</h2><span class="muted small">synthetic portal response</span></div>
+    <pre class="doc">{{ doc_html|safe }}</pre>
+    <div class="legend small"><mark class="src fail">failed rule</mark> <mark class="src low">low confidence</mark> <mark class="src ok">extracted</mark></div>
+  </section>
+
+  <section class="card fields-card">
+    <form method="post" action="/case/{{ case.case_id }}/gold?v={{ v }}&t={{ t }}">
+      <div class="card-head">
+        <h2>Extracted fields</h2>
+        <button type="submit" class="button">Save edits as gold</button>
+      </div>
+      <p class="muted small">Edit any wrong value and save. Only changed fields are written, as gold labels tagged
+        <code>source=human</code> with a timestamp. Hover a field to find its source text. Threshold {{ '%.2f'|format(t) }}.</p>
+      <div class="plan-grid">
+        {% for key in plan_keys %}{% set f = fields[key] %}
+        <div class="plan-item"><label>{{ FIELD_LABELS[key.split('.')[1]] }}</label>{{ cell(f) }}</div>
+        {% endfor %}
+      </div>
+      <div class="table-scroll">
+      <table class="grid">
+        <thead><tr><th>CPT</th>{% for name in code_fields %}<th>{{ FIELD_LABELS[name] }}</th>{% endfor %}</tr></thead>
+        <tbody>
+          {% for cpt in CPT_CODES %}
+          <tr><th title="{{ CPT_DESCRIPTIONS[cpt] }}"><code>{{ cpt }}</code></th>
+            {% for name in code_fields %}<td class="{{ 'wide' if name == 'notes' else 'mid' if name == 'allowed_pos' }}">{{ cell(fields[cpt ~ '.' ~ name]) }}</td>{% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+      <div class="form-foot"><button type="submit" class="button">Save edits as gold</button>
+        <span class="legend small"><span class="sw fail"></span> failed rule <span class="sw low"></span> below threshold</span></div>
+    </form>
+  </section>
+</div>
+
+{% if human %}
+<section class="card">
+  <div class="card-head"><h2>Human gold labels for this case</h2></div>
+  <table class="list compact">
+    <thead><tr><th>Field</th><th>Value</th><th>Source</th><th>Saved at (UTC)</th></tr></thead>
+    <tbody>{% for h in human %}<tr><td><code>{{ h.field_key }}</code></td><td>{{ h.value if h.value is not none else '—' }}</td><td><span class="pill ok">{{ h.source }}</span></td><td>{{ h.created_at }}</td></tr>{% endfor %}</tbody>
+  </table>
+</section>
+{% endif %}
+{% endblock %}
+{% block scripts %}<script src="/static/case.js" defer></script>{% endblock %}
