@@ -1,0 +1,3 @@
+# Optional: only needed for the real-model extraction path (LITELLM_MODEL).
+-r requirements.txt
+litellm==1.106.6
