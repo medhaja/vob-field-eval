@@ -58,7 +58,7 @@ def _rng(*parts: Any) -> random.Random:
 
 
 def _confident(rng: random.Random) -> float:
-    return round(rng.betavariate(40, 1.5), 3)
+    return round(rng.betavariate(60, 1.1), 3)
 
 
 def _perturb(rng: random.Random, kind: str, value: Any) -> Any:
