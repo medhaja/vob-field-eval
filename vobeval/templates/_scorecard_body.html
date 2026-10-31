@@ -15,7 +15,8 @@
     {% endfor %}
   </div>
   {% endif %}
-  <span class="muted small">Extractor: <code>{{ model }}</code> · {{ s.cases }} cases · {{ "{:,}".format(s.fields) }} scored fields</span>
+  <span class="muted small">Extractor: <code>{{ model }}</code> · {{ s.cases }} cases · {{ "{:,}".format(s.fields) }} scored fields ·
+    {% if n_human %}<span class="pill ok">{{ n_human }} human gold label{{ 's' if n_human != 1 }} in effect</span>{% else %}gold: synthetic{% endif %}</span>
 </div>
 
 <div class="tiles">

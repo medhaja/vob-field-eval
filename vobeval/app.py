@@ -123,7 +123,8 @@ def create_app(store: Store | None = None) -> FastAPI:
         snap = dash.snapshot()
         models = store.models()
         model = model if model in models else "mock"
-        return {"v": v, "model": model, "models": models, "sc": snap.scorecard(v, model)}
+        return {"v": v, "model": model, "models": models, "sc": snap.scorecard(v, model),
+                "n_human": len(store.human_labels())}
 
     @app.get("/", response_class=HTMLResponse)
     def scorecard(request: Request, v: str = "v1", model: str = "mock") -> HTMLResponse:
@@ -190,6 +191,9 @@ def create_app(store: Store | None = None) -> FastAPI:
             if f.source:
                 marks.append((f.source.start, f.source.end, key, status))
         human = store.human_labels(case_id)
+        human_keys = {h["field_key"] for h in human}
+        for key in human_keys & fields.keys():
+            fields[key]["human"] = True
         return {
             "case": case, "result": result, "decision": decision, "fields": fields,
             "doc_html": highlight_document(case.document, marks), "v": v, "t": t,
@@ -200,12 +204,12 @@ def create_app(store: Store | None = None) -> FastAPI:
 
     @app.get("/case/{case_id}", response_class=HTMLResponse)
     def case_detail(request: Request, case_id: str, v: str = "v1", t: float = router.DEFAULT_THRESHOLD,
-                    saved: int | None = None, before: float | None = None,
+                    saved: int | None = None, changed: int = 0, before: float | None = None,
                     after: float | None = None) -> HTMLResponse:
         ctx = case_ctx(case_id, _version(v), _threshold(t))
         flash = None
         if saved is not None:
-            flash = {"saved": saved, "before": before, "after": after}
+            flash = {"saved": saved, "changed": changed, "before": before, "after": after}
         return render(request, "case.html", page="queue", flash=flash, errors={}, **ctx)
 
     @app.post("/case/{case_id}/gold")
@@ -226,11 +230,13 @@ def create_app(store: Store | None = None) -> FastAPI:
                 errors[key] = str(exc)
         if errors:
             return render(request, "case.html", page="queue", flash=None, errors=errors, **ctx)
+        gold = ctx["case"].gold
+        changed = sum(not values_equal(field_type(k), val, gold.get(k)) for k, val in labels.items())
         before = ev.summary(dash.snapshot().rows(v))["field_accuracy"]
         if labels:
             store.save_human_labels(case_id, labels)
         after = ev.summary(dash.snapshot().rows(v))["field_accuracy"]
-        qs = urlencode({"v": v, "t": t, "saved": len(labels), "before": round(before, 6), "after": round(after, 6)})
+        qs = urlencode({"v": v, "t": t, "saved": len(labels), "changed": changed, "before": round(before, 6), "after": round(after, 6)})
         return RedirectResponse(f"/case/{case_id}?{qs}", status_code=303)
 
     # -- A/B -----------------------------------------------------------------

@@ -60,14 +60,15 @@ def test_reviewer_edit_saves_human_gold_and_recomputes(ctx):
                     data={"f__plan.oop_max": "123456"}, follow_redirects=False)
     assert r.status_code == 303
     page = client.get(r.headers["location"]).text
-    assert "Saved 1 gold label" in page and "recomputed" in page
+    assert "Saved 1 gold label" in page and "1 replaced the previous gold value" in page
 
     labels = store.human_labels(case_id)
     assert labels[0]["field_key"] == "plan.oop_max"
     assert labels[0]["value"] == 123456.0 and labels[0]["source"] == "human"
     # The extracted value no longer matches gold, so accuracy went down.
-    m = re.search(r"recomputed: ([\d.]+)% → ([\d.]+)%", page)
+    m = re.search(r"<strong>([\d.]+)% → ([\d.]+)%</strong>", page)
     assert float(m.group(2)) < float(m.group(1))
+    assert "human gold label" in client.get("/?v=v1").text
 
 
 def test_bad_value_is_rejected_with_message(ctx):
@@ -76,3 +77,13 @@ def test_bad_value_is_rejected_with_message(ctx):
     r = client.post("/case/C-0003/gold?v=v1", data={"f__plan.deductible": "lots"})
     assert r.status_code == 200 and "could not be read" in r.text
     assert len(store.human_labels("C-0003")) == n
+
+
+def test_label_matching_existing_gold_leaves_accuracy_unchanged(ctx):
+    client, store = ctx
+    case = store.case("C-0004")
+    deductible = case.gold["plan.deductible"]
+    r = client.post("/case/C-0004/gold?v=v2", data={"f__plan.deductible": f"${deductible:,.2f}"})
+    assert r.status_code == 200  # followed redirect
+    assert "unchanged" in r.text
+    assert store.human_labels("C-0004")[0]["value"] == deductible

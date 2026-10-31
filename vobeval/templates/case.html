@@ -4,7 +4,7 @@
   <div class="fcell {{ f.status }}{{ ' wrong' if not f.matches_gold }}" data-key="{{ f.key }}">
     <input name="f__{{ f.key }}" value="{{ f.input }}" aria-label="{{ f.key }}" class="{{ 'err' if errors.get(f.key) }}"
            title="{{ f.key }} · confidence {{ '%.3f'|format(f.confidence) }}{{ '' if f.has_source else ' · no source span' }}">
-    <span class="conf">{{ f.conf_display }}</span>
+    <span class="conf">{{ f.conf_display }}{% if f.human %} <span class="human-tag" title="Has a human gold label">human gold</span>{% endif %}</span>
     <span class="gold-check" title="Current gold label: {{ f.gold_display }}">{{ '✓' if f.matches_gold else '✗ gold: ' ~ f.gold_display }}</span>
     {% if errors.get(f.key) %}<span class="field-err">{{ errors[f.key] }}</span>{% endif %}
   </div>
@@ -24,8 +24,14 @@
 
 {% if flash %}
 <div class="callout ok">
-  Saved {{ flash.saved }} gold label{{ 's' if flash.saved != 1 }} with <code>source=human</code>.
-  {% if flash.before is not none %}Field accuracy for prompt {{ v }} recomputed: {{ pct(flash.before, 2) }} → {{ pct(flash.after, 2) }}.{% endif %}
+  {% if flash.saved == 0 %}No fields were changed, so nothing was saved.
+  {% else %}
+  Saved {{ flash.saved }} gold label{{ 's' if flash.saved != 1 }} with <code>source=human</code> and a timestamp.
+  {% if flash.changed %}{{ flash.changed }} replaced the previous gold value, and field accuracy for prompt {{ v }} was recomputed:
+    <strong>{{ pct(flash.before, 2) }} → {{ pct(flash.after, 2) }}</strong>.
+  {% else %}Your values match the existing gold, so field accuracy for prompt {{ v }} is unchanged at {{ pct(flash.after, 2) }}
+    (recomputed). The extractor’s output is kept as-is; the correction lives in the gold set.{% endif %}
+  {% endif %}
 </div>
 {% endif %}
 {% if errors %}<div class="callout bad">Some values could not be read. Fix the highlighted fields and save again.</div>{% endif %}
