@@ -1,5 +1,11 @@
 # VOB Field Eval
 
+<!-- walkthrough-video -->
+[![Watch the 3:56 walkthrough](docs/kt-video/poster.jpg)](https://medhaja.github.io/vob-field-eval/)
+
+**[Watch the 3:56 walkthrough](https://medhaja.github.io/vob-field-eval/)** (plays in your browser)
+<!-- /walkthrough-video -->
+
 **Field-level accuracy, review routing and prompt A/B testing for benefits verification.**
 
 ```bash
