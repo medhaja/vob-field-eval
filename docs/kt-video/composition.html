@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>vob-field-eval · KT video</title>
+<style>
+  :root {
+    --bg: #0e131b; --panel: #151c27; --panel2: #1a2230; --line: #2a3546; --line2: #3a475a;
+    --text: #e8edf4; --muted: #8e9aac; --dim: #5d6879;
+    --blue: #5aa9ff;   /* data / request */
+    --violet: #a98bfa; /* stored state: SQLite, gold labels */
+    --amber: #f2b54a;  /* low confidence / review */
+    --red: #f0646f;    /* failed rule / regression */
+    --green: #4cc38a;  /* correct / auto-approved */
+    --display: "Segoe UI Semibold", "Segoe UI", system-ui, sans-serif;
+    --body: "Segoe UI", system-ui, sans-serif;
+    --mono: Consolas, "Cascadia Mono", "Courier New", monospace;
+  }
+  html, body { margin: 0; background: #07090d; }
+  body.render { overflow: hidden; }
+  #stage {
+    position: relative; width: 1920px; height: 1080px; overflow: hidden; color: var(--text);
+    font-family: var(--body); background: radial-gradient(1400px 900px at 30% 20%, #131a25 0%, var(--bg) 60%, #0b0f15 100%);
+    transform-origin: 0 0;
+  }
+  .scene { position: absolute; inset: 0; display: none; }
+  .abs { position: absolute; white-space: nowrap; }
+  .chapter { left: 80px; top: 50px; font: 22px var(--mono); color: var(--muted); letter-spacing: .02em; }
+  .chapter b { color: var(--text); font-weight: 400; }
+  .title { left: 80px; top: 92px; font: 600 50px/1.15 var(--display); color: var(--text); }
+  .box { position: absolute; background: var(--panel); border: 2px solid var(--line); border-radius: 14px; box-sizing: border-box; }
+  .kicker { font: 17px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .mono { font-family: var(--mono); }
+  .muted { color: var(--muted); }
+  .chip { position: absolute; box-sizing: border-box; border: 2px solid var(--line2); border-radius: 999px; padding: 8px 20px; font: 22px var(--body); white-space: nowrap; background: var(--panel); }
+  .code { position: absolute; background: #10161f; border: 2px solid var(--line); border-radius: 14px; overflow: hidden; box-sizing: border-box; }
+  .code .path { height: 48px; line-height: 48px; padding: 0 22px; font: 19px var(--mono); color: var(--muted); border-bottom: 2px solid var(--line); background: #131a24; }
+  .code .ln { position: relative; white-space: pre; font-family: var(--mono); padding-left: 84px; padding-right: 20px; }
+  .code .ln .no { position: absolute; left: 0; width: 62px; text-align: right; color: var(--dim); }
+  .code .ln .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
+  .tk-kw { color: #c9d4ff; font-weight: bold; } .tk-str { color: #b9c7d9; font-style: italic; }
+  .tk-com { color: #6b7789; } .tk-num { color: #d7dee9; } .tk-def { color: #ffffff; }
+  .doc { position: absolute; background: #f3f1ea0d; border: 2px solid var(--line); border-radius: 14px; box-sizing: border-box; }
+  .doc .dl { white-space: pre; font: 19px/34px var(--mono); color: #c6cfdb; }
+  .mark { border-radius: 4px; padding: 1px 0; }
+  .row { position: absolute; box-sizing: border-box; }
+  svg { position: absolute; left: 0; top: 0; overflow: visible; }
+  #controls { display: none; }
+  body.preview #controls { display: flex; gap: 14px; align-items: center; padding: 10px 16px; font: 14px var(--body); color: #cfd6e0; background: #10141b; }
+  body.preview #controls input[type=range] { flex: 1; }
+  body.preview #wrap { overflow: hidden; }
+  #err { position: absolute; left: 20px; bottom: 20px; color: #fff; background: #b00020; font: 18px var(--mono); padding: 8px 12px; display: none; z-index: 99; }
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage"><div id="err"></div></div></div>
+<div id="controls">
+  <button id="play">Play</button>
+  <input id="scrub" type="range" min="0" max="1" step="0.001" value="0">
+  <span id="clock">0.00 s</span>
+  <span id="scene"></span>
+</div>
+<script>
+"use strict";
+/* Deterministic composition: window.renderAt(t) sets every animated property from t alone.
+   No CSS transitions, no requestAnimationFrame timing (except the preview player), no randomness. */
+
+// ---------- helpers ----------
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const ease = (x) => { x = clamp(x); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const prog = (t, start, dur = 0.6) => ease((t - start) / dur);
+const lerp = (a, b, p) => a + (b - a) * p;
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function el(tag, cls, html, parent, style) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html != null) e.innerHTML = html;
+  if (style) Object.assign(e.style, style);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function place(e, x, y, w, h) {
+  e.style.left = x + "px"; e.style.top = y + "px";
+  if (w != null) e.style.width = w + "px";
+  if (h != null) e.style.height = h + "px";
+  return e;
+}
+// Fade + slide in at `start`; optional fade out at `end`.
+function show(e, t, start, opts = {}) {
+  const { dur = 0.6, dy = 14, dx = 0, end = null, outDur = 0.5, max = 1 } = opts;
+  let p = prog(t, start, dur);
+  let o = p;
+  if (end != null) o *= 1 - prog(t, end, outDur);
+  e.style.opacity = (o * max).toFixed(4);
+  e.style.transform = `translate(${((1 - p) * dx).toFixed(2)}px, ${((1 - p) * dy).toFixed(2)}px)`;
+  return p;
+}
+function svgEl(tag, attrs, parent) {
+  const e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function mixColor(a, b, p) {
+  const h = (c) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
+  const A = h(a), B = h(b);
+  return "#" + A.map((v, i) => Math.round(lerp(v, B[i], p)).toString(16).padStart(2, "0")).join("");
+}
+const C = { blue: "#5aa9ff", violet: "#a98bfa", amber: "#f2b54a", red: "#f0646f", green: "#4cc38a",
+            line: "#2a3546", line2: "#3a475a", text: "#e8edf4", muted: "#8e9aac", panel: "#151c27" };
+const rgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; };
+
+// Animated arrow: path drawn with a dash offset; the head appears when the line arrives.
+function arrow(svg, d, color, width = 3) {
+  const path = svgEl("path", { d, fill: "none", stroke: color, "stroke-width": width, "stroke-linecap": "round", "stroke-linejoin": "round" }, svg);
+  const len = path.getTotalLength();
+  path.setAttribute("stroke-dasharray", `${len} ${len}`);
+  const end = path.getPointAtLength(len), before = path.getPointAtLength(Math.max(0, len - 4));
+  const ang = Math.atan2(end.y - before.y, end.x - before.x);
+  const s = 14, pts = [[0, 0], [-s, -s * 0.55], [-s, s * 0.55]].map(([x, y]) =>
+    [end.x + x * Math.cos(ang) - y * Math.sin(ang), end.y + x * Math.sin(ang) + y * Math.cos(ang)].join(",")).join(" ");
+  const head = svgEl("polygon", { points: pts, fill: color }, svg);
+  return (p, alpha = 1) => {
+    path.setAttribute("stroke-dashoffset", (len * (1 - p)).toFixed(2));
+    path.style.opacity = p > 0 ? alpha : 0;
+    head.style.opacity = (clamp((p - 0.92) / 0.08) * alpha).toFixed(3);
+  };
+}
+
+// Minimal Python highlighter for code-focus panels.
+const KW = new Set("def class return if else elif for in not or and None True False is import from as with try except lambda yield".split(" "));
+function hiPy(src) {
+  const re = /(#.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|f"(?:[^"\\]|\\.)*")|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)|(\s+)|(.)/g;
+  let out = "", m, prev = "";
+  while ((m = re.exec(src))) {
+    if (m[1]) out += `<span class="tk-com">${esc(m[1])}</span>`;
+    else if (m[2]) out += `<span class="tk-str">${esc(m[2])}</span>`;
+    else if (m[3]) out += `<span class="tk-num">${esc(m[3])}</span>`;
+    else if (m[4]) out += KW.has(m[4]) ? `<span class="tk-kw">${m[4]}</span>` : (prev === "def" || prev === "class") ? `<span class="tk-def">${m[4]}</span>` : esc(m[4]);
+    else out += esc(m[0]);
+    if (m[4]) prev = m[4]; else if (!m[5]) prev = "";
+  }
+  return out;
+}
+// Code panel: lines = [[number|null, text], ...]
+function codePanel(parent, { x, y, w, path, lines, size = 22, lh = 36 }) {
+  const box = place(el("div", "code", null, parent), x, y, w, 48 + 16 + lines.length * lh + 14);
+  el("div", "path", esc(path), box);
+  const body = el("div", null, null, box, { paddingTop: "14px" });
+  const map = {};
+  for (const [no, text] of lines) {
+    const ln = el("div", "ln", null, body, { fontSize: size + "px", lineHeight: lh + "px", height: lh + "px" });
+    el("span", "bar", null, ln);
+    el("span", "no", no == null ? "⋮" : String(no), ln);
+    el("span", "src", no == null ? "" : hiPy(text), ln);
+    if (no != null) map[no] = ln;
+  }
+  // set(active: {lineNo: [color, strength]}) — strength 0..1; dims others while anything is active.
+  box.highlight = (active) => {
+    let any = 0;
+    for (const k in active) any = Math.max(any, active[k][1]);
+    for (const no in map) {
+      const a = active[no];
+      const s = a ? a[1] : 0;
+      const ln = map[no];
+      ln.style.background = a ? rgba(a[0], 0.16 * s) : "transparent";
+      ln.querySelector(".bar").style.background = a ? rgba(a[0], s) : "transparent";
+      ln.style.opacity = (1 - any * 0.55 * (1 - s)).toFixed(3);
+    }
+  };
+  box.highlight({});
+  return box;
+}
+
+// ---------- data + timing ----------
+let T = null, D = null;
+const SCENE_FNS = [];
+const errors = [];
+function fail(msg) { errors.push(msg); const e = document.getElementById("err"); e.style.display = "block"; e.textContent = errors.join(" | "); console.error(msg); }
+
+// Beat lookup: the time (scene-local) where `phrase` starts in the narration, from Kokoro word timestamps.
+function beatsFor(scene) {
+  const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+  let joined = "", owner = [];
+  scene.words.forEach((w, i) => { const n = norm(w.text); joined += n; for (let k = 0; k < n.length; k++) owner.push(i); });
+  return (phrase, which = "start") => {
+    const idx = joined.indexOf(norm(phrase));
+    if (idx < 0) { fail(`beat not found in scene ${scene.id}: "${phrase}"`); return 0; }
+    const w = scene.words[owner[which === "start" ? idx : idx + norm(phrase).length - 1]];
+    return which === "start" ? w.start : w.end;
+  };
+}
+
+function header(root, no, label, title) {
+  el("div", "abs chapter", `<b>${no}</b> / ${esc(label)}`, root);
+  return el("div", "abs title", esc(title), root);
+}
+
+// ---------- scenes ----------
+// Each builder gets (root, S, scene) and returns update(t) where t is scene-local seconds.
+
+// 01 · Why it exists
+SCENE_FNS.push((root, S, sc) => {
+  const hero = el("div", "abs", null, root, { left: "0", top: "0", width: "1920px", height: "1080px" });
+  el("div", "abs", "VOB Field Eval", hero, { left: "0", width: "1920px", top: "380px", textAlign: "center", font: "600 120px var(--display)" });
+  el("div", "abs muted", "Field-level accuracy, review routing and prompt A/B for benefits verification", hero, { left: "0", width: "1920px", top: "540px", textAlign: "center", font: "34px var(--body)" });
+  el("div", "abs", "A walkthrough of the codebase", hero, { left: "0", width: "1920px", top: "610px", textAlign: "center", font: "24px var(--mono)", color: C.blue });
+  const chap = el("div", "abs chapter", "<b>01</b> / Why it exists", root);
+  const title = el("div", "abs title", "One case is 68 separate answers", root);
+
+  const bCodes = S("eight C-P-T codes"), bOwn = S("its own copay"), b68 = S("sixty-eight"),
+        bGrade = S("Grade the whole case"), b97 = S("ninety-seven percent"), bEvery = S("scores every field");
+  const x0 = 150, y0 = 250, cw = 92, ch = 40, stride = 102, labW = 110;
+  const grid = el("div", "abs", null, root, { left: "0", top: "0" });
+  const cols = ["Copay", "Coins.", "Auth", "Sess/yr", "Units/day", "POS", "Tele", "Notes"];
+  const colEls = cols.map((c, i) => el("div", "abs muted", c, grid, { left: x0 + labW + i * stride + "px", top: y0 + 60 + "px", width: cw + "px", textAlign: "center", font: "16px var(--body)" }));
+  const planLab = el("div", "abs mono", "plan", grid, { left: x0 + "px", top: y0 + 8 + "px", font: "20px var(--mono)", color: C.muted });
+  const planNames = ["Active", "Deductible", "Ded. met", "OOP max"];
+  const cells = [];
+  planNames.forEach((n, i) => cells.push({ e: place(el("div", "box", `<div style="font:15px var(--body);text-align:center;line-height:${ch - 4}px;color:#cfe3ff">${n}</div>`, grid), x0 + labW + i * stride, y0, cw, ch), r: -1, c: i }));
+  const codes = ["97151", "97152", "97153", "97154", "97155", "97156", "97157", "97158"];
+  const rowLabs = codes.map((c, r) => el("div", "abs mono", c, grid, { left: x0 + "px", top: y0 + 100 + r * 52 + 8 + "px", font: "20px var(--mono)" }));
+  codes.forEach((_, r) => cols.forEach((_, c) => cells.push({ e: place(el("div", "box", null, grid), x0 + labW + c * stride, y0 + 100 + r * 52, cw, ch), r, c })));
+  const redSet = new Set(["2,3", "4,5", "0,5", "6,0"]);
+  const counter = el("div", "abs", null, root, { left: "1200px", top: "290px" });
+  el("div", "mono muted", "4 + 8 × 8", counter, { font: "40px var(--mono)" });
+  el("div", null, "= 68 scored fields per case", counter, { font: "600 46px var(--display)", marginTop: "6px" });
+  const badge = place(el("div", "box", `<div style="font:600 56px var(--display);color:${C.red}">Case: ✗ wrong</div><div class="muted" style="font:26px var(--body);margin-top:10px">…but which field? which payer?</div>`, root), 330, 470, 560, 170);
+  Object.assign(badge.style, { borderColor: C.red, textAlign: "center", paddingTop: "22px", background: "#1a1418" });
+  const tile = (y, big, color, txt) => {
+    const b = place(el("div", "box", `<div style="font:600 80px var(--display);color:${color}">${big}</div><div style="font:26px var(--body);margin-top:-4px">${txt}</div>`, root), 1200, y, 600, 170);
+    Object.assign(b.style, { padding: "18px 30px", borderColor: rgba(color, 0.6) });
+    return b;
+  };
+  const s = D.summary_v1;
+  const t1 = tile(470, (100 * s.field_accuracy).toFixed(1) + "%", C.green, "of fields correct · prompt v1");
+  const t2 = tile(665, (100 * s.case_accuracy).toFixed(1) + "%", C.amber, "of cases with every field correct");
+  const foot = el("div", "abs muted", `${D.n_cases} synthetic cases · deterministic mock extractor`, root, { left: "1200px", top: "860px", font: "20px var(--mono)" });
+
+  return (t) => {
+    show(hero, t, -1, { end: bCodes - 0.9, outDur: 0.6, dy: 0 });
+    show(chap, t, bCodes - 0.5, { dy: 0 });
+    show(title, t, bCodes - 0.5);
+    rowLabs.forEach((e, r) => show(e, t, bCodes + r * 0.08, { dx: -10, dy: 0 }));
+    show(planLab, t, bOwn, { dx: -10, dy: 0 });
+    colEls.forEach((e, i) => show(e, t, bOwn + i * 0.05, { dy: 6 }));
+    const redP = prog(t, bGrade, 0.6);
+    const dimP = prog(t, bGrade + 1.7, 0.6) * (1 - prog(t, bEvery, 0.7));
+    for (const { e, r, c } of cells) {
+      const st = r < 0 ? bOwn : bOwn + 0.25 + r * 0.12 + c * 0.03;
+      const p = prog(t, st, 0.5);
+      const red = redSet.has(`${r},${c}`) ? redP : 0;
+      e.style.opacity = (p * (1 - 0.85 * dimP * (red ? 0.6 : 1))).toFixed(3);
+      e.style.transform = `translateY(${((1 - p) * 8).toFixed(2)}px)`;
+      e.style.background = red ? rgba(C.red, 0.12 + 0.2 * red) : rgba(C.blue, r < 0 ? 0.2 : 0.14);
+      e.style.borderColor = red ? mixColor("#4a76a8", C.red, red) : "#4a76a8";
+    }
+    show(counter, t, b68);
+    show(badge, t, bGrade + 1.7, { end: bEvery, dy: 10 });
+    show(t1, t, b97);
+    show(t2, t, b97 + 0.9);
+    show(foot, t, b97 + 1.4);
+  };
+});
+
+// 02 · Architecture
+SCENE_FNS.push((root, S) => {
+  header(root, "02", "Architecture", "Write once, compute on read");
+  const bGen = S("seeded generator"), bExt = S("An extractor"), bStore = S("stores typed results"), bRead = S("On the read side"),
+        bCache = S("cached until"), bLLM = S("optional Lite"), bPlain = S("plain, deterministic");
+  const svg = svgEl("svg", { width: 1920, height: 1080 }, root);
+  const lane1 = el("div", "abs kicker", "write path · once, at startup", root, { left: "140px", top: "212px" });
+  const lane2 = el("div", "abs kicker", "read path · on every page load", root, { left: "140px", top: "500px" });
+  const mk = (x, y, w, h, color, kicker, main, sub, tag) => {
+    const b = place(el("div", "box", `<div class="kicker">${kicker}</div><div class="mono" style="font-size:30px;margin-top:6px">${main}</div><div class="muted" style="font-size:20px;margin-top:6px">${sub}</div>` + (tag ? `<div class="tag mono" style="font-size:17px;margin-top:8px;color:${C.green}">✓ deterministic · no model</div>` : ""), root), x, y, w, h);
+    Object.assign(b.style, { padding: "16px 22px", borderColor: color });
+    return b;
+  };
+  const gen = mk(140, 250, 400, 170, C.blue, "synthetic data", "generator.py", "240 cases · 4 fictional payers<br>seed 20261031");
+  const ext = mk(700, 250, 440, 170, C.blue, "extraction", "extractor.py", "prompt v1 + v2 → typed VOBResult<br>deterministic mock by default");
+  const db = mk(1300, 250, 460, 170, C.violet, "stored state", "SQLite · store.py", "cases · results · gold_labels");
+  const val = mk(140, 650, 330, 150, C.line2, "rules", "validator.py", "12 payer rules", true);
+  const rou = mk(560, 650, 330, 150, C.line2, "routing", "router.py", "auto or review · 0.80", true);
+  const evl = mk(980, 650, 330, 150, C.line2, "scoring", "evaluation.py", "accuracy · A/B · CIs", true);
+  const ui = mk(1400, 650, 360, 150, C.line2, "demo UI", "app.py", "FastAPI · 5 pages");
+  const tags = [val, rou, evl].map((b) => b.querySelector(".tag"));
+  const a1 = arrow(svg, "M545,335 H692", C.blue), a2 = arrow(svg, "M1145,335 H1292", C.blue);
+  const a3 = arrow(svg, "M1530,425 V545 H305 V642", C.violet);
+  const a4 = arrow(svg, "M475,725 H552", C.blue), a5 = arrow(svg, "M895,725 H972", C.blue), a6 = arrow(svg, "M1315,725 H1392", C.blue);
+  const snap = svgEl("rect", { x: 112, y: 625, width: 1676, height: 238, rx: 18, fill: "none", stroke: C.violet, "stroke-width": 2.5, "stroke-dasharray": "10 8" }, svg);
+  const snapLab = el("div", "abs mono", "Snapshot · cached until gold_revision changes  (service.py)", root, { left: "140px", top: "818px", fontSize: "20px", color: C.violet });
+  const llm = svgEl("rect", { x: 684, y: 234, width: 472, height: 202, rx: 20, fill: "none", stroke: C.blue, "stroke-width": 2.5, "stroke-dasharray": "6 7" }, svg);
+  const llmLab = el("div", "abs mono", "optional: LiteLLM + prompts/v1.md, v2.md · only if LITELLM_MODEL is set", root, { left: "684px", top: "450px", fontSize: "18px", color: C.blue });
+  return (t) => {
+    show(lane1, t, 0.2, { dy: 0 });
+    show(gen, t, bGen - 0.2);
+    show(ext, t, bExt - 0.1);
+    a1(prog(t, bExt, 0.7));
+    show(db, t, bStore - 0.1);
+    a2(prog(t, bStore, 0.7));
+    show(lane2, t, bRead - 0.3, { dy: 0 });
+    a3(prog(t, bRead, 1.0));
+    show(val, t, bRead + 0.8); a4(prog(t, bRead + 1.2, 0.5));
+    show(rou, t, bRead + 1.4); a5(prog(t, bRead + 1.8, 0.5));
+    show(evl, t, bRead + 2.0); a6(prog(t, bRead + 2.4, 0.5));
+    show(ui, t, bRead + 2.6);
+    const pc = prog(t, bCache, 0.7);
+    snap.style.opacity = pc; show(snapLab, t, bCache, { dy: 6 });
+    const pl = prog(t, bLLM, 0.7);
+    llm.style.opacity = pl; show(llmLab, t, bLLM, { dy: 6 });
+    tags.forEach((e, i) => show(e, t, bPlain + i * 0.25, { dy: 4 }));
+  };
+});
+
+// Shared: render the real synthetic document excerpt with marks.
+function docPanel(root, x, y, w, statusColors) {
+  const cs = D.case;
+  const box = place(el("div", "doc", null, root), x, y, w, 70 + (cs.lines.length + 1) * 34 + 26);
+  box.style.padding = "0 24px";
+  el("div", "mono muted", `${cs.case_id} · ${esc(cs.payer)} · synthetic document`, box, { font: "18px/52px var(--mono)", borderBottom: "2px solid " + C.line, margin: "0 -24px 10px", padding: "0 24px" });
+  el("div", "dl", esc(cs.header), box, { color: "#e3e8ef" });
+  const marks = {};
+  for (const ln of cs.lines) {
+    let html = "", pos = 0;
+    for (const m of ln.marks) {
+      html += esc(ln.text.slice(pos, m.start));
+      html += `<span class="mark" data-key="${m.key}">${esc(ln.text.slice(m.start, m.end))}</span>`;
+      pos = m.end;
+    }
+    html += esc(ln.text.slice(pos));
+    const d = el("div", "dl", html, box);
+    d.querySelectorAll(".mark").forEach((e) => (marks[e.dataset.key] = e));
+  }
+  return { box, marks };
+}
+function setMark(e, color, p) {
+  e.style.background = rgba(color, 0.32 * p);
+  e.style.boxShadow = `inset 0 -3px 0 ${rgba(color, p)}`;
+  e.style.color = p > 0.5 ? "#ffffff" : "";
+}
+
+// 03 · Trace: extraction
+SCENE_FNS.push((root, S) => {
+  header(root, "03", "Trace: extraction", "One case becomes a typed result");
+  const bFollow = S("follow one case"), bDoc = S("portal-style document"), bNoise = S("with noise"), bWhere = S("records where"),
+        bExtract = S("extract mock runs"), bVOB = S("V-O-B Result"), bValue = S("carries a value"), bConf = S("a confidence"), bSrc = S("source span");
+  const cs = D.case;
+  const { box: doc, marks } = docPanel(root, 100, 240, 820);
+  const chips = ["Copay: $25", "Copay: 25.00", "Copay: twenty-five dollars"].map((s, i) => {
+    const c = el("div", "chip mono", esc(s), root, { left: [100, 300, 520][i] + "px", top: "640px", fontSize: "20px", borderColor: rgba(C.blue, 0.6) });
+    return c;
+  });
+  const chipCap = el("div", "abs muted", "same value, three spellings — the generator mixes them in on purpose", root, { left: "100px", top: "702px", font: "21px var(--body)" });
+  const ck = cs.copay_key, sp = cs.spans[ck];
+  const spanLab = el("div", "abs mono", `spans["${ck}"] = [${sp[0]}, ${sp[1]}]`, root, { left: "100px", top: "770px", fontSize: "24px", color: C.blue });
+  const spanCap = el("div", "abs muted", "character offsets of each value in the document (models.py · Case.spans)", root, { left: "100px", top: "812px", font: "20px var(--body)" });
+  // Track
+  const fn = place(el("div", "box mono", `extract_mock(case, "v2")`, root), 1000, 240, 430, 64);
+  Object.assign(fn.style, { fontSize: "24px", lineHeight: "60px", textAlign: "center" });
+  const out = place(el("div", "box mono", "VOBResult", root), 1560, 240, 260, 64);
+  Object.assign(out.style, { fontSize: "24px", lineHeight: "60px", textAlign: "center" });
+  const svg = svgEl("svg", { width: 1920, height: 1080 }, root);
+  const ar = arrow(svg, "M1436,272 H1552", C.line2, 3);
+  const card = el("div", "chip mono", cs.case_id, root, { top: "250px", fontSize: "20px", padding: "6px 16px", borderColor: C.blue, background: "#13243a", color: "#dcecff", zIndex: 3 });
+  const code = codePanel(root, { x: 1000, y: 350, w: 820, path: "vobeval/models.py", size: 21, lh: 34, lines: [
+    [89, "class Extracted(BaseModel, Generic[T]):"],
+    [90, "    value: Optional[T] = None"],
+    [91, "    confidence: float = PField(ge=0.0, le=1.0)"],
+    [92, "    source: Optional[Span] = None"],
+    [null, ""],
+    [113, "class VOBResult(BaseModel):"],
+    [114, "    case_id: str"],
+    [115, "    prompt_version: str"],
+    [116, "    model: str"],
+    [117, "    latency_ms: float"],
+    [118, "    member_id: Extracted[str]"],
+    [119, "    secondary_coverage: Extracted[bool]"],
+    [120, "    plan: PlanBenefits"],
+    [121, "    codes: dict[str, CodeBenefits]"],
+  ] });
+  return (t) => {
+    show(card, t, bFollow, { dx: -20, dy: 0, end: bExtract + 1.6, outDur: 0.4 });
+    // card travels: waits at left of fn, moves through fn to result box
+    const pm = prog(t, bExtract + 0.2, 1.8);
+    card.style.left = lerp(905, 1590, pm).toFixed(1) + "px";
+    show(doc, t, bDoc - 0.2);
+    chips.forEach((c, i) => show(c, t, bNoise + i * 0.35));
+    show(chipCap, t, bNoise + 1.0);
+    const pw = prog(t, bWhere, 0.6);
+    setMark(marks[ck], C.blue, Math.max(pw, prog(t, bSrc, 0.5)));
+    for (const k in marks) if (k !== ck) setMark(marks[k], C.blue, 0);
+    show(spanLab, t, bWhere + 0.3); show(spanCap, t, bWhere + 0.6);
+    show(fn, t, bFollow + 0.3);
+    show(out, t, bFollow + 0.5);
+    ar(prog(t, bFollow + 0.6, 0.5));
+    const active = prog(t, bExtract + 0.4, 0.4) * (1 - prog(t, bExtract + 1.8, 0.4));
+    fn.style.borderColor = mixColor(C.line, C.blue, active);
+    out.style.borderColor = mixColor(C.line, C.blue, prog(t, bExtract + 1.9, 0.4));
+    show(code, t, bVOB - 0.3);
+    const hl = {};
+    const step = (no, a, b) => { const s = prog(t, a, 0.35) * (b == null ? 1 : 1 - prog(t, b, 0.35)); if (s > 0) hl[no] = [C.blue, s]; };
+    step(113, bVOB, bValue); step(90, bValue, bConf); step(91, bConf, bSrc); step(92, bSrc);
+    code.highlight(hl);
+  };
+});
+
+// 04 · Trace: routing
+SCENE_FNS.push((root, S) => {
+  header(root, "04", "Trace: routing", "Rules, then a routing decision");
+  const b12 = S("twelve rules"), bDed = S("Deductible met"), bAuth = S("Auth must match"), bRoute = S("route decides"),
+        bUnder = S("under the threshold"), bFails = S("any rule fails"), bReview = S("goes to review"), bAuto = S("auto-approved"),
+        bRisk = S("sort by risk"), bZero = S("At zero point eight"), b32 = S("thirty-two percent"), b77 = S("seventy-seven percent");
+  const rules = [["R01", "Deductible met <= deductible"], ["R02", "OOP max >= deductible"], ["R03", "Copay and coinsurance not both set"],
+    ["R04", "Auth matches payer rules"], ["R05", "Session limit present"], ["R06", "Inactive coverage blocks benefits"],
+    ["R07", "Telehealth and POS agree"], ["R08", "Units/day within payer cap"], ["R09", "Values in plausible range"],
+    ["R10", "Member ID matches request"], ["R11", "Secondary coverage needs COB review"], ["R12", "Coverage status and core fields present"]];
+  const rlab = el("div", "abs kicker", "validator.py · RULES", root, { left: "100px", top: "212px" });
+  const rEls = rules.map(([id, title], i) => {
+    const r = place(el("div", "box", `<span class="mono" style="color:${C.muted};margin-right:14px">${id}</span>${esc(title)}`, root), 100, 250 + i * 50, 470, 42);
+    Object.assign(r.style, { font: "19px/38px var(--body)", padding: "0 14px", borderRadius: "10px", borderWidth: "1.5px" });
+    return r;
+  });
+  const code = codePanel(root, { x: 640, y: 240, w: 1180, path: "vobeval/router.py", size: 21, lh: 33, lines: [
+    [48, "def route(result: VOBResult, case: Case, threshold: float = DEFAULT_THRESHOLD,"],
+    [49, "          failures: list[RuleFailure] | None = None) -> Decision:"],
+    [50, "    flat = result.flat()"],
+    [51, "    low = [k for k, f in flat.items() if f.confidence < threshold]"],
+    [52, "    failures = validate(result, case) if failures is None else failures"],
+    [53, "    min_conf = min(f.confidence for f in flat.values())"],
+    [54, "    return Decision("],
+    [55, "        case_id=case.case_id,"],
+    [56, "        route=\"review\" if low or failures else \"auto\","],
+    [57, "        min_confidence=min_conf,"],
+    [58, "        low_confidence=low,"],
+    [59, "        failures=failures,"],
+    [60, "    )"],
+  ] });
+  const q = D.queue;
+  const tray = place(el("div", "box", `<div style="font:600 24px var(--display);color:${C.amber}">Review queue <span class="muted" style="font:19px var(--mono);margin-left:10px">v1 @ 0.80 · ${D.queue_flagged} of ${D.n_cases} flagged</span></div>`, root), 640, 772, 760, 268);
+  Object.assign(tray.style, { borderColor: C.amber, padding: "14px 22px" });
+  const qRows = q.map((r) => {
+    const e = el("div", "row", `<span class="mono">${r.case_id}</span><span style="position:absolute;left:110px;width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.payer)}</span><span class="mono" style="position:absolute;left:380px;color:${C.amber}">risk ${r.risk.toFixed(1)}</span><span class="muted" style="position:absolute;left:510px;width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:17px">${esc(r.reasons[0])}</span>`, tray, { left: "22px", width: "716px", height: "38px", font: "20px/38px var(--body)" });
+    return e;
+  });
+  const byId = q.map((r) => r.case_id).slice().sort();
+  const auto = place(el("div", "box", `<div style="font:600 24px var(--display);color:${C.green}">Auto-approve</div><div class="mono muted" style="font-size:19px;margin-top:8px">${D.routing_v1.auto_cases} of ${D.n_cases} cases</div>`, root), 1440, 772, 380, 268);
+  Object.assign(auto.style, { borderColor: C.green, padding: "14px 22px" });
+  const card = el("div", "chip mono", D.case.case_id + " → review", root, { left: "1196px", top: "784px", fontSize: "19px", padding: "4px 14px", borderColor: C.amber, background: "#2a2214", zIndex: 3 });
+  const ghost = el("div", "chip mono", "no low field + no failure", root, { left: "1462px", top: "890px", fontSize: "18px", padding: "4px 14px", borderColor: C.green, borderStyle: "dashed", color: C.green });
+  // Sweep chart
+  const cx = 700, cy = 280, cw = 700, chh = 480;
+  const chart = el("div", "abs", null, root, { left: "0", top: "0" });
+  const csvg = svgEl("svg", { width: 1920, height: 1080 }, chart);
+  const X = (th) => cx + th * cw, Y = (v) => cy + chh - v * chh;
+  svgEl("line", { x1: cx, y1: cy + chh, x2: cx + cw, y2: cy + chh, stroke: C.line2, "stroke-width": 2 }, csvg);
+  svgEl("line", { x1: cx, y1: cy, x2: cx, y2: cy + chh, stroke: C.line2, "stroke-width": 2 }, csvg);
+  [0, 0.25, 0.5, 0.75, 1].forEach((v) => {
+    svgEl("line", { x1: cx, y1: Y(v), x2: cx + cw, y2: Y(v), stroke: C.line, "stroke-width": 1 }, csvg);
+    el("div", "abs mono muted", (v * 100) + "%", chart, { left: cx - 70 + "px", top: Y(v) - 12 + "px", width: "58px", textAlign: "right", fontSize: "17px" });
+    el("div", "abs mono muted", v.toFixed(2), chart, { left: X(v) - 24 + "px", top: cy + chh + 10 + "px", fontSize: "17px" });
+  });
+  el("div", "abs muted", "confidence threshold", chart, { left: cx + cw / 2 - 90 + "px", top: cy + chh + 40 + "px", fontSize: "19px" });
+  const pts = D.sweep_v1;
+  const line = (key, color) => {
+    const d = pts.map((p, i) => `${i ? "L" : "M"}${X(p.threshold).toFixed(1)},${Y(p[key]).toFixed(1)}`).join(" ");
+    const path = svgEl("path", { d, fill: "none", stroke: color, "stroke-width": 4, "stroke-linejoin": "round" }, csvg);
+    const len = path.getTotalLength(); path.setAttribute("stroke-dasharray", `${len} ${len}`);
+    return (p) => path.setAttribute("stroke-dashoffset", (len * (1 - p)).toFixed(1));
+  };
+  const lAuto = line("automation_rate", C.green), lEsc = line("escaped_error_rate", C.red);
+  const p80 = pts.find((p) => Math.abs(p.threshold - 0.8) < 1e-9);
+  const mk = svgEl("line", { x1: X(0.8), y1: cy, x2: X(0.8), y2: cy + chh, stroke: C.amber, "stroke-width": 2.5, "stroke-dasharray": "8 6" }, csvg);
+  const dots = [svgEl("circle", { cx: X(0.8), cy: Y(p80.automation_rate), r: 8, fill: C.green }, csvg), svgEl("circle", { cx: X(0.8), cy: Y(p80.escaped_error_rate), r: 8, fill: C.red }, csvg)];
+  const legend = el("div", "abs", `<span style="color:${C.green}">━ automation rate</span>&nbsp;&nbsp;&nbsp;<span style="color:${C.red}">━ cases with an escaped error</span>&nbsp;&nbsp;&nbsp;<span class="mono muted" style="font-size:17px">prompt v1 · threshold.html</span>`, chart, { left: cx + "px", top: "236px", fontSize: "20px" });
+  const r1 = D.routing_v1, base = D.baseline_v1;
+  const stat1 = el("div", "abs", `<div style="font:600 76px var(--display);color:${C.green}">${(100 * r1.automation_rate).toFixed(1)}%</div><div style="font-size:22px">auto-approved at 0.80</div><div class="mono" style="font-size:20px;color:${C.amber};margin-top:14px">${r1.review_per_day} of 200 a day to staff</div>`, root, { left: "1490px", top: "260px" });
+  const barBox = el("div", "abs", null, root, { left: "1490px", top: "560px", width: "330px" });
+  el("div", "muted", "cases with an escaped error", barBox, { fontSize: "20px", marginBottom: "14px" });
+  const bar = (label, v) => {
+    const w = el("div", null, `<div style="font-size:19px">${label} <span class="mono" style="float:right">${(100 * v).toFixed(1)}%</span></div>`, barBox, { marginBottom: "22px" });
+    const tr = el("div", null, null, w, { height: "26px", background: "#1d2532", borderRadius: "6px", marginTop: "8px", overflow: "hidden" });
+    const f = el("div", null, null, tr, { height: "100%", background: C.red, width: "0" });
+    return { w, f, v };
+  };
+  const bars = [bar("No routing", base.escaped_error_rate), bar("Routed at 0.80", r1.escaped_error_rate)];
+  return (t) => {
+    show(rlab, t, b12 - 0.3, { dy: 0 });
+    const dimRules = prog(t, bRoute, 0.6);
+    rEls.forEach((e, i) => {
+      const p = show(e, t, b12 + i * 0.06, { dx: -12, dy: 0 });
+      const hot = i === 0 ? prog(t, bDed, 0.4) * (1 - prog(t, bAuth, 0.4)) : i === 3 ? prog(t, bAuth, 0.4) * (1 - prog(t, bRoute, 0.4)) : 0;
+      e.style.borderColor = mixColor(C.line, C.blue, hot);
+      e.style.background = hot ? rgba(C.blue, 0.14 * hot) : C.panel;
+      e.style.opacity = (p * (1 - 0.45 * dimRules * (1 - hot))).toFixed(3);
+    });
+    const outB = bZero - 0.2;
+    show(code, t, bRoute - 0.3, { end: outB });
+    const hl = {};
+    const s1 = prog(t, bUnder, 0.35), s2 = prog(t, bFails, 0.35), s3 = prog(t, bReview, 0.35);
+    if (s1) hl[51] = [C.amber, s1 * (1 - 0.5 * s3)];
+    if (s2) hl[52] = [C.red, s2 * (1 - 0.5 * s3)];
+    if (s3) hl[56] = [C.amber, s3];
+    code.highlight(hl);
+    show(tray, t, bReview, { end: outB });
+    show(auto, t, bReview + 0.2, { end: outB });
+    show(card, t, bReview, { end: outB, dy: -30 });
+    show(ghost, t, bAuto, { end: outB, dy: -30 });
+    // queue rows: case-id order, then risk order
+    const pr = prog(t, bRisk, 0.9);
+    qRows.forEach((e, i) => {
+      const from = byId.indexOf(q[i].case_id), to = i;
+      e.style.top = (52 + lerp(from, to, pr) * 40).toFixed(1) + "px";
+      // dim while rows pass each other so text never overlaps at full strength
+      e.style.opacity = (prog(t, bReview + 0.4 + i * 0.1, 0.4) * (1 - 0.85 * Math.sin(Math.PI * pr))).toFixed(3);
+    });
+    // chart phase
+    show(chart, t, bZero, { dy: 0 });
+    lAuto(prog(t, bZero + 0.2, 1.3)); lEsc(prog(t, bZero + 0.4, 1.3));
+    const pm = prog(t, bZero + 1.4, 0.5);
+    mk.style.opacity = pm; dots.forEach((d) => (d.style.opacity = pm));
+    show(stat1, t, b32);
+    show(barBox, t, b77 - 0.4);
+    bars.forEach((b, i) => (b.f.style.width = (100 * b.v * prog(t, b77 + i * 0.9, 0.8)).toFixed(2) + "%"));
+  };
+});
+
+// 05 · Trace: review
+SCENE_FNS.push((root, S) => {
+  header(root, "05", "Trace: review", "The reviewer closes the loop");
+  const bPage = S("case page"), bRed = S("red for a failed rule"), bAmber = S("amber for low"), bFix = S("fixes a value"),
+        bSave = S("saves it as gold"), bAppend = S("append-only"), bHuman = S("tagged human"), bLatest = S("latest row wins"),
+        bRev = S("gold revision"), bAcc = S("accuracy recomputes");
+  const cs = D.case;
+  const phaseA = el("div", "abs", null, root, { left: "0", top: "0" });
+  const { box: doc, marks } = docPanel(phaseA, 100, 240, 820);
+  const panel = place(el("div", "box", null, phaseA), 960, 240, 860, 470);
+  panel.style.padding = "18px 26px";
+  el("div", null, `<span style="font:600 24px var(--display);color:${C.amber}">Needs review</span><span class="mono muted" style="font-size:19px;margin-left:14px">risk ${cs.risk.toFixed(1)} · prompt v2</span>`, panel);
+  el("div", "muted", esc(cs.reasons.join(" · ")), panel, { fontSize: "19px", margin: "6px 0 16px" });
+  const statusColor = { fail: C.red, low: C.amber, ok: C.green };
+  const rows = cs.fields.map((f, i) => {
+    const r = el("div", "row", null, panel, { left: "26px", top: 104 + i * 76 + "px", width: "808px", height: "64px", border: "2px solid " + C.line, borderRadius: "10px", font: "22px/60px var(--body)", padding: "0 18px" });
+    el("span", null, esc(f.label), r);
+    const v = el("span", "mono", esc(f.value), r, { position: "absolute", left: "330px", width: "150px", height: "44px", top: "8px", lineHeight: "40px", border: "2px solid " + C.line2, borderRadius: "8px", padding: "0 12px", boxSizing: "border-box", background: "#0f151e" });
+    el("span", "mono muted", "conf " + (Math.floor(f.confidence * 100) / 100).toFixed(2), r, { position: "absolute", left: "510px", fontSize: "19px" });
+    const st = el("span", "mono", f.status === "fail" ? "rule failed" : f.status === "low" ? "low confidence" : "ok", r, { position: "absolute", right: "18px", fontSize: "18px" });
+    return { r, v, st, f };
+  });
+  const lowRow = rows.find((x) => x.f.status === "low");
+  const newVal = el("span", "mono", esc(lowRow.f.gold), lowRow.r, { position: "absolute", left: "342px", top: "8px", lineHeight: "44px" });
+  const btn = place(el("div", "box", "Save edits as gold", panel), 26, 352, 300, 56);
+  Object.assign(btn.style, { font: "600 22px/52px var(--display)", textAlign: "center" });
+  // Phase B: data model
+  const phaseB = el("div", "abs", null, root, { left: "0", top: "0" });
+  const table = (x, y, w, name, cols, color) => {
+    const b = place(el("div", "box", `<div class="mono" style="font-size:24px;color:${color}">${name}</div><div class="mono muted" style="font-size:18px;margin-top:8px;line-height:28px">${cols}</div>`, phaseB), x, y, w, null);
+    Object.assign(b.style, { padding: "16px 22px", borderColor: rgba(color, 0.7) });
+    return b;
+  };
+  const tCases = table(100, 240, 560, "cases", "case_id PK · payer_id · request_member_id<br>scenario · document · spans · hints", C.violet);
+  const tRes = table(100, 420, 560, "results", "case_id · prompt_version · model (PK)<br>latency_ms · result (VOBResult JSON)", C.violet);
+  const gb = place(el("div", "box", `<div class="mono" style="font-size:24px;color:${C.violet}">gold_labels <span class="muted" style="font-size:18px">· append-only</span></div>`, phaseB), 700, 240, 1120, 410);
+  Object.assign(gb.style, { padding: "16px 22px", borderColor: rgba(C.violet, 0.7) });
+  const colX = [0, 110, 250, 560, 660, 820];
+  const hdr = ["id", "case_id", "field_key", "value", "source", "created_at"];
+  const gr = (vals, top, color) => {
+    const r = el("div", "row mono", null, gb, { left: "22px", top: top + "px", width: "1072px", height: "44px", font: "20px/44px var(--mono)", borderRadius: "8px" });
+    vals.forEach((v, i) => el("span", null, esc(v), r, { position: "absolute", left: colX[i] + 10 + "px", color: color || "" }));
+    return r;
+  };
+  gr(hdr, 62, C.muted);
+  const G = D.gold_rows;
+  const gRows = G.rows.map((r, i) => gr([r.id, r.case_id, r.field_key, r.value, r.source, "‹load time›"], 112 + i * 50));
+  const target = gRows[gRows.length - 1];
+  const human = gr([G.revision + 1, cs.case_id, G.field, JSON.stringify(Number(lowRow.f.gold)), "human", "‹save time›"], 112 + gRows.length * 50);
+  human.style.background = rgba(C.violet, 0.16);
+  human.children[4].style.color = C.violet;
+  const sql = place(el("div", "box mono", `SELECT … JOIN (SELECT case_id, field_key, <span style="color:${C.violet}">MAX(id)</span> …<br>&nbsp;&nbsp;GROUP BY case_id, field_key)  <span class="muted">— store.py · gold()</span>`, phaseB), 700, 670, 1120, 92);
+  Object.assign(sql.style, { fontSize: "20px", padding: "14px 22px", lineHeight: "32px" });
+  const rev = place(el("div", "box mono", "", phaseB), 100, 620, 560, 64);
+  Object.assign(rev.style, { fontSize: "22px", lineHeight: "60px", padding: "0 22px", borderColor: C.violet });
+  const flash = place(el("div", "box", `<span style="font:600 26px var(--display)">Snapshot rebuilt</span><span class="muted" style="font-size:22px"> → field accuracy recomputed for every page (service.py · Dashboard.snapshot)</span>`, phaseB), 100, 800, 1720, 76);
+  Object.assign(flash.style, { lineHeight: "72px", padding: "0 26px", borderColor: C.green });
+  return (t) => {
+    const outA = bAppend - 0.3;
+    show(phaseA, t, bPage - 0.6, { end: outA, dy: 0 });
+    const pr = prog(t, bRed, 0.5), pa = prog(t, bAmber, 0.5);
+    for (const k in marks) {
+      const f = cs.fields.find((x) => x.key === k);
+      setMark(marks[k], f.status === "fail" ? C.red : f.status === "low" ? C.amber : C.green,
+        f.status === "fail" ? pr : f.status === "low" ? pa : 0);
+    }
+    rows.forEach(({ r, st, f }) => {
+      const p = f.status === "fail" ? pr : f.status === "low" ? pa : Math.max(pr, pa) * 0.6;
+      const col = statusColor[f.status];
+      r.style.borderColor = mixColor(C.line, col, p);
+      r.style.background = rgba(col, 0.08 * p);
+      st.style.color = col; st.style.opacity = p.toFixed(3);
+    });
+    const pf = prog(t, bFix + 0.3, 0.5);
+    lowRow.v.style.color = pf > 0 ? `rgba(232,237,244,${(1 - pf).toFixed(3)})` : "";
+    lowRow.v.style.borderColor = mixColor(C.line2, C.blue, pf);
+    newVal.style.opacity = pf.toFixed(3);
+    const ps = prog(t, bSave, 0.4);
+    btn.style.borderColor = mixColor(C.line2, C.violet, ps);
+    btn.style.background = rgba(C.violet, 0.2 * ps);
+    show(phaseB, t, bAppend - 0.1, { dy: 0 });
+    show(tCases, t, bAppend - 0.1); show(tRes, t, bAppend + 0.1); show(gb, t, bAppend + 0.2);
+    show(human, t, bHuman - 0.2, { dx: 60, dy: 0 });
+    const pl = prog(t, bLatest, 0.5);
+    target.style.opacity = (1 - 0.6 * pl).toFixed(3);
+    target.style.textDecoration = pl > 0.5 ? "line-through" : "none";
+    show(sql, t, bLatest);
+    rev.innerHTML = `gold_revision&nbsp;&nbsp;${G.revision}` + (t >= bRev + 0.3 ? ` → <span style="color:${C.violet}">${G.revision + 1}</span>` : "");
+    show(rev, t, bRev - 0.2);
+    show(flash, t, bAcc);
+  };
+});
+
+// 06 · Eval & A/B
+SCENE_FNS.push((root, S) => {
+  header(root, "06", "Eval & A/B", "Compare prompts per field, per payer");
+  const bExact = S("exact match after normalization"), b25 = S("twenty-five dollars"), bHash = S("seeded hash"), b50 = S("fifty-fifty"),
+        bBoot = S("resamples whole cases"), bFix = S("fixes session limits"), bCopay = S("copay drops"), bAvg = S("Averaged across payers"), bHold = S("significant regression");
+  const A = D.ab;
+  const norm = el("div", "abs mono", `values_equal("money", "$25", "25.00") <span class="res" style="color:${C.green}">→ True</span>`, root, { left: "100px", top: "240px", fontSize: "26px" });
+  const normRes = norm.querySelector(".res");
+  const normCap = el("div", "abs muted", "normalize.py · money and percent compare numerically", root, { left: "100px", top: "284px", fontSize: "19px" });
+  const code = codePanel(root, { x: 100, y: 340, w: 890, path: "vobeval/evaluation.py", size: 17.5, lh: 31, lines: [
+    [107, "def ab_arm(case_id: str, seed: str = AB_SEED) -> str:"],
+    [108, "    \"\"\"Seeded 50/50 split on a hash of the case ID: 'v1' (control) or 'v2'.\"\"\""],
+    [109, "    h = int(hashlib.sha256(f\"{seed}:{case_id}\".encode()).hexdigest()[:8], 16)"],
+    [110, "    return \"v1\" if h % 2 == 0 else \"v2\""],
+  ] });
+  const arms = A.arms_first_40;
+  const dotsLayer = el("div", "abs", null, root, { left: "0", top: "0" });
+  const armLab = [["v1 arm", A.arm_sizes.v1], ["v2 arm", A.arm_sizes.v2]].map(([n, k], i) =>
+    el("div", "abs", `<span class="mono">${n}</span> <span class="muted" style="font-size:18px">· ${k} cases</span>`, dotsLayer, { left: "100px", top: 640 + i * 80 + "px", fontSize: "22px" }));
+  const firstLab = el("div", "abs muted mono", "first 40 cases", dotsLayer, { left: "100px", top: "590px", fontSize: "18px" });
+  let c1 = 0, c2 = 0;
+  const dots = arms.map((a, i) => {
+    const d = el("div", "abs", null, dotsLayer, { width: "13px", height: "13px", borderRadius: "3px", background: C.blue });
+    const slot = a === "v1" ? c1++ : c2++;
+    return { d, a, x0: 330 + i * 15, y0: 594, x1: 330 + slot * 22, y1: a === "v1" ? 647 : 727 };
+  });
+  const bootCap = el("div", "abs mono muted", "bootstrap: resample whole cases × 1,000 → 95% CI", root, { left: "100px", top: "800px", fontSize: "20px" });
+  // Delta table
+  const tx = 1010, axL = 1500, axR = 1810, vmin = -50, vmax = 15;
+  const AX = (v) => axL + (v - vmin) / (vmax - vmin) * (axR - axL);
+  const tTitle = el("div", "abs", `v2 − v1 accuracy <span class="muted" style="font-size:19px">(points, 95% CI)</span>`, root, { left: tx + "px", top: "240px", font: "600 26px var(--display)" });
+  const axis = el("div", "abs", null, root, { left: "0", top: "0" });
+  const asvg = svgEl("svg", { width: 1920, height: 1080 }, axis);
+  svgEl("line", { x1: AX(0), y1: 300, x2: AX(0), y2: 740, stroke: C.line2, "stroke-width": 2 }, asvg);
+  [-40, -20, 0].forEach((v) => el("div", "abs mono muted", (v > 0 ? "+" : "") + v, axis, { left: AX(v) - 20 + "px", top: "746px", width: "40px", textAlign: "center", fontSize: "16px" }));
+  const P = A.copay_by_payer;
+  const defs = [
+    ["Sessions/yr", A.sessions, C.green, () => bFix],
+    ["POS", A.pos, C.green, () => bFix + 0.5],
+    ["Copay · " + P.northwind.name, P.northwind, C.red, () => bCopay],
+    ["Copay · " + P.cedar.name, P.cedar, C.muted, () => bCopay + 0.6],
+    ["Copay · " + P.harbor.name, P.harbor, C.muted, () => bCopay + 0.8],
+    ["Copay · " + P.riverbend.name, P.riverbend, C.muted, () => bCopay + 1.0],
+    ["Copay · all payers", A.copay_all, C.red, () => bAvg],
+  ];
+  const fmt = (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1);
+  const rowsT = defs.map(([label, r, color, at], i) => {
+    const y = 300 + i * 62;
+    const g = el("div", "abs", null, root, { left: "0", top: "0" });
+    el("div", "abs", esc(label), g, { left: tx + "px", top: y + 12 + "px", width: "405px", fontSize: "19px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: color === C.muted ? C.muted : C.text });
+    el("div", "abs mono", fmt(r.delta), g, { left: "1380px", top: y + 10 + "px", width: "90px", textAlign: "right", fontSize: "22px", color: color === C.muted ? C.muted : color });
+    const s = svgEl("svg", { width: 1920, height: 1080 }, g);
+    svgEl("line", { x1: AX(r.ci_low), y1: y + 24, x2: AX(r.ci_high), y2: y + 24, stroke: color, "stroke-width": 8, "stroke-linecap": "round", opacity: 0.55 }, s);
+    svgEl("circle", { cx: AX(r.delta), cy: y + 24, r: 8, fill: color }, s);
+    return { g, at };
+  });
+  const hold = place(el("div", "box", `<span style="font:600 34px var(--display);color:${C.red}">HOLD</span><span style="font-size:22px;margin-left:18px">${A.hint.n_worse} significant regressions → fix before shipping v2</span>`, root), 1010, 800, 810, 76);
+  Object.assign(hold.style, { borderColor: C.red, lineHeight: "72px", padding: "0 26px", background: "#1d1418" });
+  return (t) => {
+    show(norm, t, bExact - 0.2); show(normCap, t, bExact + 0.3);
+    normRes.style.opacity = prog(t, b25 + 0.8, 0.4).toFixed(3);
+    show(code, t, bHash - 0.3);
+    const hlS = prog(t, bHash, 0.4);
+    code.highlight(hlS ? { 109: [C.blue, hlS], 110: [C.blue, prog(t, b50, 0.4)] } : {});
+    show(firstLab, t, bHash + 0.3, { dy: 0 });
+    const pm = prog(t, b50, 1.0);
+    armLab.forEach((e) => show(e, t, b50 + 0.2, { dy: 0 }));
+    const k = Math.floor((t - bBoot) * 3);  // resample "tick"
+    dots.forEach(({ d, a, x0, y0, x1, y1 }, i) => {
+      d.style.left = lerp(x0, x1, pm).toFixed(1) + "px";
+      d.style.top = lerp(y0, y1, pm).toFixed(1) + "px";
+      d.style.opacity = prog(t, bHash + 0.3 + i * 0.015, 0.4).toFixed(3);
+      // deterministic pseudo-random pick per tick, to suggest resampling cases
+      const pick = t >= bBoot && t < bFix && ((i * 7 + k * 13) % 5 === 0);
+      // both arms are data (blue); v2 a lighter tint so the two rows read apart
+      d.style.background = pick ? "#ffffff" : a === "v1" ? C.blue : "#a9d2ff";
+      d.style.outline = pick ? "2px solid #ffffff" : "none";
+    });
+    show(bootCap, t, bBoot);
+    show(tTitle, t, bFix - 0.4); show(axis, t, bFix - 0.4, { dy: 0 });
+    rowsT.forEach(({ g, at }) => show(g, t, at(), { dx: 16, dy: 0 }));
+    show(hold, t, bHold);
+  };
+});
+
+// 07 · Run it · Gotchas
+SCENE_FNS.push((root, S) => {
+  el("div", "abs chapter", "<b>07</b> / Run it · Gotchas", root);
+  const titleA = el("div", "abs title", "One command, no API keys", root);
+  const titleB = el("div", "abs title", "Gotchas", root);
+  const bMake = S("type make demo"), bGen = S("generates the data"), bServe = S("serves the UI"), bKeys = S("no A-P-I keys"), bGot = S("some gotchas"),
+        bMock = S("mock extractor isn't"), bWipe = S("Make demo wipes"), bHuman = S("Human labels get"), bEsc = S("escaped errors are counted");
+  const term = place(el("div", "box", null, root), 100, 240, 1000, 370);
+  Object.assign(term.style, { background: "#0b0f15", padding: "18px 26px" });
+  const L = (html, color) => el("div", "mono", html, term, { fontSize: "21px", lineHeight: "40px", color: color || "#cfd6e0", whiteSpace: "nowrap" });
+  const lines = [
+    L(`<span style="color:${C.green}">$</span> make demo`, "#ffffff"),
+    L(`Generated ${D.n_cases} synthetic cases (${D.n_edge} edge cases) -> data/cases.jsonl`),
+    L("Extracted 240 cases with mock/v1"),
+    L("Extracted 240 cases with mock/v2"),
+    L("LITELLM_MODEL not set: using the deterministic mock extractor only.", C.muted),
+    L(`VOB Field Eval running at <span style="color:${C.blue}">http://127.0.0.1:8000</span>`),
+  ];
+  const pages = [["Scorecard", "/"], ["Threshold", "/threshold"], ["Review queue", "/queue"], ["Case detail", "/case/{id}"], ["A/B", "/ab"]].map(([n, p], i) => {
+    const b = place(el("div", "box", `<span style="font-size:23px">${n}</span><span class="mono muted" style="float:right;font-size:20px">${esc(p)}</span>`, root), 1160, 240 + i * 76, 660, 62);
+    Object.assign(b.style, { lineHeight: "58px", padding: "0 22px", borderColor: rgba(C.blue, 0.6) });
+    return b;
+  });
+  const keys = el("div", "chip", `No API keys · the LLM path is optional`, root, { left: "100px", top: "640px", borderColor: C.green, color: C.green });
+  const make = el("div", "abs mono muted", "Makefile: demo → pip install -r requirements.txt, then python -m vobeval demo", root, { left: "100px", top: "712px", fontSize: "19px" });
+  const gots = [
+    [C.amber, "The mock extractor is not a model", "Starts from the gold labels and injects seeded errors; its confidences are simulated", "extractor.py"],
+    [C.red, "make demo resets the database", "Reviewer (human) gold labels are wiped on every run", "pipeline.py · store.reset()"],
+    [C.amber, "Human labels are trusted", "The latest label wins; there is no second review", "store.py · gold()"],
+    [C.blue, "Escaped-error rate ÷ all cases", "Not ÷ auto-approved cases; read the threshold chart with that in mind", "router.py · sweep_point()"],
+  ].map(([color, h, d, src], i) => {
+    const b = place(el("div", "box", `<div style="position:absolute;left:0;top:0;bottom:0;width:10px;background:${color};border-radius:12px 0 0 12px"></div><div style="font:600 30px var(--display)">${esc(h)}</div><div class="muted" style="font-size:22px;margin-top:4px">${esc(d)}</div><div class="mono muted" style="position:absolute;right:26px;top:22px;font-size:18px">${esc(src)}</div>`, root), 100, 240 + i * 140, 1720, 118);
+    Object.assign(b.style, { padding: "18px 30px 0 40px" });
+    return b;
+  });
+  const foot = el("div", "abs muted", "Also: exact match on notes may be too strict · 240 cases → wide per-payer confidence intervals", root, { left: "100px", top: "830px", fontSize: "22px" });
+  return (t) => {
+    const out = bGot - 0.2;
+    show(titleA, t, 0.1, { end: out });
+    show(titleB, t, bGot);
+    show(term, t, bMake - 0.4, { end: out });
+    lines.forEach((e, i) => show(e, t, i === 0 ? bMake : i < 5 ? bGen + (i - 1) * 0.45 : bServe, { dy: 6 }));
+    pages.forEach((e, i) => show(e, t, bServe + 0.3 + i * 0.25, { end: out, dx: 16, dy: 0 }));
+    show(keys, t, bKeys, { end: out });
+    show(make, t, bKeys + 0.4, { end: out });
+    [bMock, bWipe, bHuman, bEsc].forEach((b, i) => show(gots[i], t, b - 0.2, { dx: 20, dy: 0 }));
+    show(foot, t, bEsc + 2.0);
+  };
+});
+
+// 08 · Recap
+SCENE_FNS.push((root, S) => {
+  header(root, "08", "Recap", "What to remember");
+  const bs = [S("Score fields"), S("Route on confidence"), S("Reviewer fixes become"), S("Compare prompts")];
+  const items = [[C.blue, "Score fields, not cases"], [C.amber, "Route on confidence + rules; tune the threshold"],
+    [C.violet, "Reviewer fixes → gold labels → recompute"], [C.red, "A/B per payer: regressions can't hide in averages"]];
+  const els = items.map(([c, txt], i) => el("div", "abs", `<span class="mono" style="display:inline-block;width:56px;height:56px;line-height:56px;text-align:center;border-radius:12px;border:2px solid ${c};color:${c};margin-right:26px;font-size:26px">${i + 1}</span>${esc(txt)}`, root, { left: "120px", top: 250 + i * 104 + "px", font: "600 38px var(--display)" }));
+  const bNext = S("Next steps");
+  const nb = [S("calibrated thresholds"), S("weighting errors"), S("double review"), S("same eval")];
+  const nlab = el("div", "abs kicker", "next steps · README", root, { left: "120px", top: "712px" });
+  const chips = ["Calibrated thresholds per field and payer", "Weight errors by billing impact", "Double-review a sample of human labels", "Same eval on real, de-identified model output"].map((s, i) => {
+    const b = place(el("div", "box", esc(s), root), 120 + (i % 2) * 850, 756 + Math.floor(i / 2) * 92, 820, 72);
+    Object.assign(b.style, { font: "26px/68px var(--body)", padding: "0 26px" });
+    return b;
+  });
+  return (t) => {
+    els.forEach((e, i) => show(e, t, bs[i] - 0.15, { dx: -16, dy: 0 }));
+    show(nlab, t, bNext - 0.2, { dy: 0 });
+    chips.forEach((c, i) => show(c, t, nb[i] - 0.2));
+  };
+});
+
+// 09 · Closing card
+SCENE_FNS.push((root) => {
+  const wrap = el("div", "abs", null, root, { left: "0", top: "0", width: "1920px", height: "1080px" });
+  el("div", "abs", "Thank you", wrap, { left: "0", width: "1920px", top: "390px", textAlign: "center", font: "600 150px var(--display)" });
+  el("div", "abs", "Made by Medhaja H L", wrap, { left: "0", width: "1920px", top: "600px", textAlign: "center", font: "48px var(--body)", color: "#c3ccd8" });
+  return (t) => { show(wrap, t, 0, { dur: 0.9, dy: 0 }); };
+});
+
+// ---------- driver ----------
+const scenes = [];
+function build() {
+  const stage = document.getElementById("stage");
+  T.scenes.forEach((sc, i) => {
+    const root = el("div", "scene", null, stage);
+    root.style.display = "block";  // layout needed for SVG path lengths during build
+    const update = SCENE_FNS[i](root, beatsFor(sc), sc);
+    root.style.display = "none";
+    scenes.push({ sc, root, update, last: i === T.scenes.length - 1 });
+  });
+}
+window.renderAt = function renderAt(t) {
+  t = clamp(t, 0, T.total);
+  let idx = scenes.findIndex((s) => t >= s.sc.start && t < s.sc.start + s.sc.duration);
+  if (idx < 0) idx = scenes.length - 1;
+  scenes.forEach((s, i) => {
+    if (i !== idx) { s.root.style.display = "none"; return; }
+    const lt = t - s.sc.start;
+    s.root.style.display = "block";
+    const fadeIn = i === 0 ? 1 : prog(lt, 0, 0.35);
+    const fadeOut = s.last ? 1 : 1 - prog(lt, s.sc.duration - 0.3, 0.3);
+    s.root.style.opacity = (fadeIn * fadeOut).toFixed(4);
+    s.update(lt);
+  });
+  return idx;
+};
+window.ready = (async () => {
+  [T, D] = await Promise.all(["timing.json", "scene_data.json"].map((f) => fetch(f).then((r) => r.json())));
+  await document.fonts.ready;
+  build();
+  window.TOTAL = T.total;
+  window.renderAt(0);
+  if (errors.length) throw new Error(errors.join("; "));
+  return { total: T.total, fps: T.fps, scenes: T.scenes.map((s) => ({ id: s.id, title: s.title, start: s.start, duration: s.duration })) };
+})();
+
+// ---------- preview mode (?preview): play/scrub; not used by the renderer ----------
+if (new URLSearchParams(location.search).has("preview")) {
+  document.body.classList.add("preview");
+  window.ready.then(() => {
+    const stage = document.getElementById("stage"), wrap = document.getElementById("wrap");
+    const fit = () => { const s = Math.min(innerWidth / 1920, (innerHeight - 50) / 1080); stage.style.transform = `scale(${s})`; wrap.style.height = 1080 * s + "px"; };
+    fit(); addEventListener("resize", fit);
+    const scrub = document.getElementById("scrub"), clock = document.getElementById("clock"), name = document.getElementById("scene"), btn = document.getElementById("play");
+    scrub.max = T.total;
+    const audio = new Audio("out/narration.wav");
+    let playing = false, t0 = 0, tStart = 0;
+    const draw = (t) => { const i = renderAt(t); scrub.value = t; clock.textContent = t.toFixed(2) + " s"; name.textContent = T.scenes[i].id + " · " + T.scenes[i].title; };
+    const tick = () => { if (!playing) return; const t = tStart + (performance.now() - t0) / 1000; if (t >= T.total) { playing = false; btn.textContent = "Play"; } draw(Math.min(t, T.total)); requestAnimationFrame(tick); };
+    btn.onclick = () => { playing = !playing; btn.textContent = playing ? "Pause" : "Play"; if (playing) { tStart = +scrub.value; t0 = performance.now(); audio.currentTime = tStart; audio.play().catch(() => {}); tick(); } else audio.pause(); };
+    scrub.oninput = () => { playing = false; btn.textContent = "Play"; audio.pause(); draw(+scrub.value); };
+    const q = new URLSearchParams(location.search).get("t"); if (q) draw(+q);
+  });
+} else {
+  document.body.classList.add("render");
+}
+</script>
+</body>
+</html>

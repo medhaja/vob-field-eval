@@ -1,0 +1,3578 @@
+{
+ "fps": 30,
+ "width": 1920,
+ "height": 1080,
+ "sample_rate": 24000,
+ "voice": "af_heart",
+ "total": 236.3,
+ "scenes": [
+  {
+   "id": "01",
+   "title": "Why it exists",
+   "start": 0.0,
+   "duration": 32.275,
+   "audio_duration": 31.675,
+   "pad": 0.6,
+   "sentences": [
+    {
+     "text": "Benefits verification for A-B-A therapy isn't one answer.",
+     "start": 0.15,
+     "end": 4.5
+    },
+    {
+     "text": "Each case covers eight C-P-T codes, and each code has its own copay, auth rule, session limit and place of service.",
+     "start": 4.72,
+     "end": 12.395
+    },
+    {
+     "text": "That's sixty-eight scored fields per case.",
+     "start": 12.615,
+     "end": 15.29
+    },
+    {
+     "text": "Grade the whole case right or wrong, and you can't see which field broke.",
+     "start": 15.51,
+     "end": 19.66
+    },
+    {
+     "text": "Here, version one gets ninety-seven percent of fields right, but only twenty-two percent of cases.",
+     "start": 19.88,
+     "end": 26.105
+    },
+    {
+     "text": "So this prototype scores every field, and sends only the risky cases to a person.",
+     "start": 26.325,
+     "end": 31.675
+    }
+   ],
+   "words": [
+    {
+     "text": "Benefits",
+     "start": 0.425,
+     "end": 0.875
+    },
+    {
+     "text": "verification",
+     "start": 0.875,
+     "end": 1.675
+    },
+    {
+     "text": "for",
+     "start": 1.675,
+     "end": 1.825
+    },
+    {
+     "text": "A-B-A",
+     "start": 1.825,
+     "end": 2.3
+    },
+    {
+     "text": "therapy",
+     "start": 2.3,
+     "end": 2.975
+    },
+    {
+     "text": "isn't",
+     "start": 2.975,
+     "end": 3.325
+    },
+    {
+     "text": "one",
+     "start": 3.325,
+     "end": 3.575
+    },
+    {
+     "text": "answer",
+     "start": 3.575,
+     "end": 4.25
+    },
+    {
+     "text": ".",
+     "start": 4.25,
+     "end": 4.4
+    },
+    {
+     "text": "Each",
+     "start": 4.995,
+     "end": 5.195
+    },
+    {
+     "text": "case",
+     "start": 5.195,
+     "end": 5.495
+    },
+    {
+     "text": "covers",
+     "start": 5.495,
+     "end": 5.857
+    },
+    {
+     "text": "eight",
+     "start": 5.857,
+     "end": 6.133
+    },
+    {
+     "text": "C-P-T",
+     "start": 6.133,
+     "end": 6.695
+    },
+    {
+     "text": "codes",
+     "start": 6.695,
+     "end": 7.395
+    },
+    {
+     "text": ",",
+     "start": 7.395,
+     "end": 7.495
+    },
+    {
+     "text": "and",
+     "start": 7.495,
+     "end": 7.62
+    },
+    {
+     "text": "each",
+     "start": 7.62,
+     "end": 7.845
+    },
+    {
+     "text": "code",
+     "start": 7.845,
+     "end": 8.095
+    },
+    {
+     "text": "has",
+     "start": 8.095,
+     "end": 8.258
+    },
+    {
+     "text": "its",
+     "start": 8.258,
+     "end": 8.37
+    },
+    {
+     "text": "own",
+     "start": 8.37,
+     "end": 8.62
+    },
+    {
+     "text": "copay",
+     "start": 8.62,
+     "end": 9.145
+    },
+    {
+     "text": ",",
+     "start": 9.145,
+     "end": 9.245
+    },
+    {
+     "text": "auth",
+     "start": 9.245,
+     "end": 9.532
+    },
+    {
+     "text": "rule",
+     "start": 9.532,
+     "end": 10.045
+    },
+    {
+     "text": ",",
+     "start": 10.045,
+     "end": 10.157
+    },
+    {
+     "text": "session",
+     "start": 10.157,
+     "end": 10.57
+    },
+    {
+     "text": "limit",
+     "start": 10.57,
+     "end": 10.92
+    },
+    {
+     "text": "and",
+     "start": 10.92,
+     "end": 11.045
+    },
+    {
+     "text": "place",
+     "start": 11.045,
+     "end": 11.357
+    },
+    {
+     "text": "of",
+     "start": 11.357,
+     "end": 11.445
+    },
+    {
+     "text": "service",
+     "start": 11.445,
+     "end": 12.17
+    },
+    {
+     "text": ".",
+     "start": 12.17,
+     "end": 12.295
+    },
+    {
+     "text": "That's",
+     "start": 12.865,
+     "end": 13.14
+    },
+    {
+     "text": "sixty-eight",
+     "start": 13.14,
+     "end": 13.615
+    },
+    {
+     "text": "scored",
+     "start": 13.615,
+     "end": 13.965
+    },
+    {
+     "text": "fields",
+     "start": 13.965,
+     "end": 14.315
+    },
+    {
+     "text": "per",
+     "start": 14.315,
+     "end": 14.44
+    },
+    {
+     "text": "case",
+     "start": 14.44,
+     "end": 15.04
+    },
+    {
+     "text": ".",
+     "start": 15.04,
+     "end": 15.19
+    },
+    {
+     "text": "Grade",
+     "start": 15.76,
+     "end": 16.023
+    },
+    {
+     "text": "the",
+     "start": 16.023,
+     "end": 16.11
+    },
+    {
+     "text": "whole",
+     "start": 16.11,
+     "end": 16.335
+    },
+    {
+     "text": "case",
+     "start": 16.335,
+     "end": 16.672
+    },
+    {
+     "text": "right",
+     "start": 16.672,
+     "end": 16.935
+    },
+    {
+     "text": "or",
+     "start": 16.935,
+     "end": 17.06
+    },
+    {
+     "text": "wrong",
+     "start": 17.06,
+     "end": 17.61
+    },
+    {
+     "text": ",",
+     "start": 17.61,
+     "end": 17.71
+    },
+    {
+     "text": "and",
+     "start": 17.71,
+     "end": 17.822
+    },
+    {
+     "text": "you",
+     "start": 17.822,
+     "end": 17.91
+    },
+    {
+     "text": "can't",
+     "start": 17.91,
+     "end": 18.16
+    },
+    {
+     "text": "see",
+     "start": 18.16,
+     "end": 18.348
+    },
+    {
+     "text": "which",
+     "start": 18.348,
+     "end": 18.535
+    },
+    {
+     "text": "field",
+     "start": 18.535,
+     "end": 18.81
+    },
+    {
+     "text": "broke",
+     "start": 18.81,
+     "end": 19.41
+    },
+    {
+     "text": ".",
+     "start": 19.41,
+     "end": 19.56
+    },
+    {
+     "text": "Here",
+     "start": 20.13,
+     "end": 20.505
+    },
+    {
+     "text": ",",
+     "start": 20.505,
+     "end": 20.592
+    },
+    {
+     "text": "version",
+     "start": 20.592,
+     "end": 20.98
+    },
+    {
+     "text": "one",
+     "start": 20.98,
+     "end": 21.305
+    },
+    {
+     "text": "gets",
+     "start": 21.305,
+     "end": 21.567
+    },
+    {
+     "text": "ninety-seven",
+     "start": 21.567,
+     "end": 22.255
+    },
+    {
+     "text": "percent",
+     "start": 22.255,
+     "end": 22.592
+    },
+    {
+     "text": "of",
+     "start": 22.592,
+     "end": 22.68
+    },
+    {
+     "text": "fields",
+     "start": 22.68,
+     "end": 23.03
+    },
+    {
+     "text": "right",
+     "start": 23.03,
+     "end": 23.605
+    },
+    {
+     "text": ",",
+     "start": 23.605,
+     "end": 23.705
+    },
+    {
+     "text": "but",
+     "start": 23.705,
+     "end": 23.855
+    },
+    {
+     "text": "only",
+     "start": 23.855,
+     "end": 24.167
+    },
+    {
+     "text": "twenty-two",
+     "start": 24.167,
+     "end": 24.68
+    },
+    {
+     "text": "percent",
+     "start": 24.68,
+     "end": 25.017
+    },
+    {
+     "text": "of",
+     "start": 25.017,
+     "end": 25.105
+    },
+    {
+     "text": "cases",
+     "start": 25.105,
+     "end": 25.88
+    },
+    {
+     "text": ".",
+     "start": 25.88,
+     "end": 26.005
+    },
+    {
+     "text": "So",
+     "start": 26.575,
+     "end": 26.687
+    },
+    {
+     "text": "this",
+     "start": 26.687,
+     "end": 26.875
+    },
+    {
+     "text": "prototype",
+     "start": 26.875,
+     "end": 27.45
+    },
+    {
+     "text": "scores",
+     "start": 27.45,
+     "end": 27.862
+    },
+    {
+     "text": "every",
+     "start": 27.862,
+     "end": 28.187
+    },
+    {
+     "text": "field",
+     "start": 28.187,
+     "end": 28.85
+    },
+    {
+     "text": ",",
+     "start": 28.85,
+     "end": 28.95
+    },
+    {
+     "text": "and",
+     "start": 28.95,
+     "end": 29.075
+    },
+    {
+     "text": "sends",
+     "start": 29.075,
+     "end": 29.387
+    },
+    {
+     "text": "only",
+     "start": 29.387,
+     "end": 29.687
+    },
+    {
+     "text": "the",
+     "start": 29.687,
+     "end": 29.775
+    },
+    {
+     "text": "risky",
+     "start": 29.775,
+     "end": 30.125
+    },
+    {
+     "text": "cases",
+     "start": 30.125,
+     "end": 30.575
+    },
+    {
+     "text": "to",
+     "start": 30.575,
+     "end": 30.662
+    },
+    {
+     "text": "a",
+     "start": 30.662,
+     "end": 30.725
+    },
+    {
+     "text": "person",
+     "start": 30.725,
+     "end": 31.45
+    },
+    {
+     "text": ".",
+     "start": 31.45,
+     "end": 31.575
+    }
+   ]
+  },
+  {
+   "id": "02",
+   "title": "The architecture",
+   "start": 32.275,
+   "duration": 29.68,
+   "audio_duration": 29.08,
+   "pad": 0.6,
+   "sentences": [
+    {
+     "text": "On the write side, a seeded generator makes two hundred forty synthetic cases from four fictional payers.",
+     "start": 0.15,
+     "end": 7.075
+    },
+    {
+     "text": "An extractor reads each one with two prompt versions, and stores typed results in S-Q-Lite.",
+     "start": 7.295,
+     "end": 12.995
+    },
+    {
+     "text": "On the read side, validation, routing and scoring run when a page loads, cached until a gold label changes.",
+     "start": 13.215,
+     "end": 20.44
+    },
+    {
+     "text": "Only the extractor could be a model, through an optional Lite L-L-M path.",
+     "start": 20.66,
+     "end": 25.385
+    },
+    {
+     "text": "Everything else is plain, deterministic Python.",
+     "start": 25.605,
+     "end": 29.08
+    }
+   ],
+   "words": [
+    {
+     "text": "On",
+     "start": 0.4,
+     "end": 0.512
+    },
+    {
+     "text": "the",
+     "start": 0.512,
+     "end": 0.6
+    },
+    {
+     "text": "write",
+     "start": 0.6,
+     "end": 0.875
+    },
+    {
+     "text": "side",
+     "start": 0.875,
+     "end": 1.475
+    },
+    {
+     "text": ",",
+     "start": 1.475,
+     "end": 1.587
+    },
+    {
+     "text": "a",
+     "start": 1.587,
+     "end": 1.725
+    },
+    {
+     "text": "seeded",
+     "start": 1.725,
+     "end": 2.112
+    },
+    {
+     "text": "generator",
+     "start": 2.112,
+     "end": 2.775
+    },
+    {
+     "text": "makes",
+     "start": 2.775,
+     "end": 3.062
+    },
+    {
+     "text": "two",
+     "start": 3.062,
+     "end": 3.275
+    },
+    {
+     "text": "hundred",
+     "start": 3.275,
+     "end": 3.587
+    },
+    {
+     "text": "forty",
+     "start": 3.587,
+     "end": 3.925
+    },
+    {
+     "text": "synthetic",
+     "start": 3.925,
+     "end": 4.4
+    },
+    {
+     "text": "cases",
+     "start": 4.4,
+     "end": 5.125
+    },
+    {
+     "text": "from",
+     "start": 5.125,
+     "end": 5.35
+    },
+    {
+     "text": "four",
+     "start": 5.35,
+     "end": 5.675
+    },
+    {
+     "text": "fictional",
+     "start": 5.675,
+     "end": 6.075
+    },
+    {
+     "text": "payers",
+     "start": 6.075,
+     "end": 6.825
+    },
+    {
+     "text": ".",
+     "start": 6.825,
+     "end": 6.975
+    },
+    {
+     "text": "An",
+     "start": 7.545,
+     "end": 7.645
+    },
+    {
+     "text": "extractor",
+     "start": 7.645,
+     "end": 8.245
+    },
+    {
+     "text": "reads",
+     "start": 8.245,
+     "end": 8.508
+    },
+    {
+     "text": "each",
+     "start": 8.508,
+     "end": 8.72
+    },
+    {
+     "text": "one",
+     "start": 8.72,
+     "end": 8.945
+    },
+    {
+     "text": "with",
+     "start": 8.945,
+     "end": 9.133
+    },
+    {
+     "text": "two",
+     "start": 9.133,
+     "end": 9.345
+    },
+    {
+     "text": "prompt",
+     "start": 9.345,
+     "end": 9.62
+    },
+    {
+     "text": "versions",
+     "start": 9.62,
+     "end": 10.395
+    },
+    {
+     "text": ",",
+     "start": 10.395,
+     "end": 10.495
+    },
+    {
+     "text": "and",
+     "start": 10.495,
+     "end": 10.633
+    },
+    {
+     "text": "stores",
+     "start": 10.633,
+     "end": 11.045
+    },
+    {
+     "text": "typed",
+     "start": 11.045,
+     "end": 11.32
+    },
+    {
+     "text": "results",
+     "start": 11.32,
+     "end": 11.795
+    },
+    {
+     "text": "in",
+     "start": 11.795,
+     "end": 11.883
+    },
+    {
+     "text": "S-Q-Lite",
+     "start": 11.883,
+     "end": 12.745
+    },
+    {
+     "text": ".",
+     "start": 12.745,
+     "end": 12.895
+    },
+    {
+     "text": "On",
+     "start": 13.465,
+     "end": 13.578
+    },
+    {
+     "text": "the",
+     "start": 13.578,
+     "end": 13.665
+    },
+    {
+     "text": "read",
+     "start": 13.665,
+     "end": 13.94
+    },
+    {
+     "text": "side",
+     "start": 13.94,
+     "end": 14.49
+    },
+    {
+     "text": ",",
+     "start": 14.49,
+     "end": 14.628
+    },
+    {
+     "text": "validation",
+     "start": 14.628,
+     "end": 15.415
+    },
+    {
+     "text": ",",
+     "start": 15.415,
+     "end": 15.528
+    },
+    {
+     "text": "routing",
+     "start": 15.528,
+     "end": 15.94
+    },
+    {
+     "text": "and",
+     "start": 15.94,
+     "end": 16.065
+    },
+    {
+     "text": "scoring",
+     "start": 16.065,
+     "end": 16.528
+    },
+    {
+     "text": "run",
+     "start": 16.528,
+     "end": 16.753
+    },
+    {
+     "text": "when",
+     "start": 16.753,
+     "end": 16.878
+    },
+    {
+     "text": "a",
+     "start": 16.878,
+     "end": 16.94
+    },
+    {
+     "text": "page",
+     "start": 16.94,
+     "end": 17.265
+    },
+    {
+     "text": "loads",
+     "start": 17.265,
+     "end": 17.915
+    },
+    {
+     "text": ",",
+     "start": 17.915,
+     "end": 18.053
+    },
+    {
+     "text": "cached",
+     "start": 18.053,
+     "end": 18.428
+    },
+    {
+     "text": "until",
+     "start": 18.428,
+     "end": 18.678
+    },
+    {
+     "text": "a",
+     "start": 18.678,
+     "end": 18.74
+    },
+    {
+     "text": "gold",
+     "start": 18.74,
+     "end": 19.09
+    },
+    {
+     "text": "label",
+     "start": 19.09,
+     "end": 19.39
+    },
+    {
+     "text": "changes",
+     "start": 19.39,
+     "end": 20.19
+    },
+    {
+     "text": ".",
+     "start": 20.19,
+     "end": 20.34
+    },
+    {
+     "text": "Only",
+     "start": 20.935,
+     "end": 21.198
+    },
+    {
+     "text": "the",
+     "start": 21.198,
+     "end": 21.335
+    },
+    {
+     "text": "extractor",
+     "start": 21.335,
+     "end": 21.91
+    },
+    {
+     "text": "could",
+     "start": 21.91,
+     "end": 22.023
+    },
+    {
+     "text": "be",
+     "start": 22.023,
+     "end": 22.148
+    },
+    {
+     "text": "a",
+     "start": 22.148,
+     "end": 22.21
+    },
+    {
+     "text": "model",
+     "start": 22.21,
+     "end": 22.81
+    },
+    {
+     "text": ",",
+     "start": 22.81,
+     "end": 22.91
+    },
+    {
+     "text": "through",
+     "start": 22.91,
+     "end": 23.098
+    },
+    {
+     "text": "an",
+     "start": 23.098,
+     "end": 23.223
+    },
+    {
+     "text": "optional",
+     "start": 23.223,
+     "end": 23.723
+    },
+    {
+     "text": "Lite",
+     "start": 23.723,
+     "end": 24.073
+    },
+    {
+     "text": "L-L-M",
+     "start": 24.073,
+     "end": 24.585
+    },
+    {
+     "text": "path",
+     "start": 24.585,
+     "end": 25.135
+    },
+    {
+     "text": ".",
+     "start": 25.135,
+     "end": 25.285
+    },
+    {
+     "text": "Everything",
+     "start": 25.855,
+     "end": 26.242
+    },
+    {
+     "text": "else",
+     "start": 26.242,
+     "end": 26.48
+    },
+    {
+     "text": "is",
+     "start": 26.48,
+     "end": 26.642
+    },
+    {
+     "text": "plain",
+     "start": 26.642,
+     "end": 27.23
+    },
+    {
+     "text": ",",
+     "start": 27.23,
+     "end": 27.33
+    },
+    {
+     "text": "deterministic",
+     "start": 27.33,
+     "end": 28.08
+    },
+    {
+     "text": "Python",
+     "start": 28.08,
+     "end": 28.83
+    },
+    {
+     "text": ".",
+     "start": 28.83,
+     "end": 28.98
+    }
+   ]
+  },
+  {
+   "id": "03",
+   "title": "Trace, part 1: one case becomes a typed result",
+   "start": 61.955,
+   "duration": 22.585,
+   "audio_duration": 21.985,
+   "pad": 0.6,
+   "sentences": [
+    {
+     "text": "Let's follow one case.",
+     "start": 0.15,
+     "end": 2.0
+    },
+    {
+     "text": "The generator writes a portal-style document with noise, like a copay spelled out in words, and records where each value sits.",
+     "start": 2.22,
+     "end": 9.97
+    },
+    {
+     "text": "Then, extract mock runs with prompt version two.",
+     "start": 10.19,
+     "end": 13.54
+    },
+    {
+     "text": "It returns a V-O-B Result, where every field carries a value, a confidence from zero to one, and the source span it came from.",
+     "start": 13.76,
+     "end": 21.985
+    }
+   ],
+   "words": [
+    {
+     "text": "Let's",
+     "start": 0.425,
+     "end": 0.675
+    },
+    {
+     "text": "follow",
+     "start": 0.675,
+     "end": 0.975
+    },
+    {
+     "text": "one",
+     "start": 0.975,
+     "end": 1.175
+    },
+    {
+     "text": "case",
+     "start": 1.175,
+     "end": 1.75
+    },
+    {
+     "text": ".",
+     "start": 1.75,
+     "end": 1.9
+    },
+    {
+     "text": "The",
+     "start": 2.47,
+     "end": 2.583
+    },
+    {
+     "text": "generator",
+     "start": 2.583,
+     "end": 3.17
+    },
+    {
+     "text": "writes",
+     "start": 3.17,
+     "end": 3.408
+    },
+    {
+     "text": "a",
+     "start": 3.408,
+     "end": 3.508
+    },
+    {
+     "text": "portal-style",
+     "start": 3.508,
+     "end": 4.22
+    },
+    {
+     "text": "document",
+     "start": 4.22,
+     "end": 4.658
+    },
+    {
+     "text": "with",
+     "start": 4.658,
+     "end": 4.82
+    },
+    {
+     "text": "noise",
+     "start": 4.82,
+     "end": 5.495
+    },
+    {
+     "text": ",",
+     "start": 5.495,
+     "end": 5.595
+    },
+    {
+     "text": "like",
+     "start": 5.595,
+     "end": 5.732
+    },
+    {
+     "text": "a",
+     "start": 5.732,
+     "end": 5.808
+    },
+    {
+     "text": "copay",
+     "start": 5.808,
+     "end": 6.283
+    },
+    {
+     "text": "spelled",
+     "start": 6.283,
+     "end": 6.607
+    },
+    {
+     "text": "out",
+     "start": 6.607,
+     "end": 6.795
+    },
+    {
+     "text": "in",
+     "start": 6.795,
+     "end": 6.945
+    },
+    {
+     "text": "words",
+     "start": 6.945,
+     "end": 7.595
+    },
+    {
+     "text": ",",
+     "start": 7.595,
+     "end": 7.695
+    },
+    {
+     "text": "and",
+     "start": 7.695,
+     "end": 7.82
+    },
+    {
+     "text": "records",
+     "start": 7.82,
+     "end": 8.258
+    },
+    {
+     "text": "where",
+     "start": 8.258,
+     "end": 8.433
+    },
+    {
+     "text": "each",
+     "start": 8.433,
+     "end": 8.72
+    },
+    {
+     "text": "value",
+     "start": 8.72,
+     "end": 9.107
+    },
+    {
+     "text": "sits",
+     "start": 9.107,
+     "end": 9.745
+    },
+    {
+     "text": ".",
+     "start": 9.745,
+     "end": 9.87
+    },
+    {
+     "text": "Then",
+     "start": 10.465,
+     "end": 10.79
+    },
+    {
+     "text": ",",
+     "start": 10.79,
+     "end": 10.865
+    },
+    {
+     "text": "extract",
+     "start": 10.865,
+     "end": 11.365
+    },
+    {
+     "text": "mock",
+     "start": 11.365,
+     "end": 11.64
+    },
+    {
+     "text": "runs",
+     "start": 11.64,
+     "end": 12.003
+    },
+    {
+     "text": "with",
+     "start": 12.003,
+     "end": 12.165
+    },
+    {
+     "text": "prompt",
+     "start": 12.165,
+     "end": 12.44
+    },
+    {
+     "text": "version",
+     "start": 12.44,
+     "end": 12.778
+    },
+    {
+     "text": "two",
+     "start": 12.778,
+     "end": 13.29
+    },
+    {
+     "text": ".",
+     "start": 13.29,
+     "end": 13.44
+    },
+    {
+     "text": "It",
+     "start": 13.985,
+     "end": 14.11
+    },
+    {
+     "text": "returns",
+     "start": 14.11,
+     "end": 14.66
+    },
+    {
+     "text": "a",
+     "start": 14.66,
+     "end": 14.773
+    },
+    {
+     "text": "V-O-B",
+     "start": 14.773,
+     "end": 15.335
+    },
+    {
+     "text": "Result",
+     "start": 15.335,
+     "end": 15.91
+    },
+    {
+     "text": ",",
+     "start": 15.91,
+     "end": 15.985
+    },
+    {
+     "text": "where",
+     "start": 15.985,
+     "end": 16.173
+    },
+    {
+     "text": "every",
+     "start": 16.173,
+     "end": 16.498
+    },
+    {
+     "text": "field",
+     "start": 16.498,
+     "end": 16.81
+    },
+    {
+     "text": "carries",
+     "start": 16.81,
+     "end": 17.148
+    },
+    {
+     "text": "a",
+     "start": 17.148,
+     "end": 17.21
+    },
+    {
+     "text": "value",
+     "start": 17.21,
+     "end": 17.935
+    },
+    {
+     "text": ",",
+     "start": 17.935,
+     "end": 18.073
+    },
+    {
+     "text": "a",
+     "start": 18.073,
+     "end": 18.185
+    },
+    {
+     "text": "confidence",
+     "start": 18.185,
+     "end": 18.76
+    },
+    {
+     "text": "from",
+     "start": 18.76,
+     "end": 18.96
+    },
+    {
+     "text": "zero",
+     "start": 18.96,
+     "end": 19.285
+    },
+    {
+     "text": "to",
+     "start": 19.285,
+     "end": 19.41
+    },
+    {
+     "text": "one",
+     "start": 19.41,
+     "end": 19.935
+    },
+    {
+     "text": ",",
+     "start": 19.935,
+     "end": 20.035
+    },
+    {
+     "text": "and",
+     "start": 20.035,
+     "end": 20.148
+    },
+    {
+     "text": "the",
+     "start": 20.148,
+     "end": 20.248
+    },
+    {
+     "text": "source",
+     "start": 20.248,
+     "end": 20.535
+    },
+    {
+     "text": "span",
+     "start": 20.535,
+     "end": 20.848
+    },
+    {
+     "text": "it",
+     "start": 20.848,
+     "end": 20.935
+    },
+    {
+     "text": "came",
+     "start": 20.935,
+     "end": 21.21
+    },
+    {
+     "text": "from",
+     "start": 21.21,
+     "end": 21.735
+    },
+    {
+     "text": ".",
+     "start": 21.735,
+     "end": 21.885
+    }
+   ]
+  },
+  {
+   "id": "04",
+   "title": "Trace, part 2: rules, routing and the review queue",
+   "start": 84.54,
+   "duration": 35.04,
+   "audio_duration": 34.44,
+   "pad": 0.6,
+   "sentences": [
+    {
+     "text": "Next, validate runs twelve rules against a per-payer table.",
+     "start": 0.15,
+     "end": 4.325
+    },
+    {
+     "text": "Deductible met can't exceed the deductible.",
+     "start": 4.545,
+     "end": 7.67
+    },
+    {
+     "text": "Auth must match the payer's rule for that code.",
+     "start": 7.89,
+     "end": 10.815
+    },
+    {
+     "text": "Then, route decides.",
+     "start": 11.035,
+     "end": 12.81
+    },
+    {
+     "text": "If any field is under the threshold, zero point eight by default, or any rule fails, the case goes to review.",
+     "start": 13.03,
+     "end": 20.005
+    },
+    {
+     "text": "Otherwise, it's auto-approved.",
+     "start": 20.225,
+     "end": 22.4
+    },
+    {
+     "text": "Flagged cases sort by risk.",
+     "start": 22.62,
+     "end": 24.77
+    },
+    {
+     "text": "At zero point eight, version one auto-approves thirty-two percent of cases, and escaped errors fall from seventy-seven percent of cases to thirteen.",
+     "start": 24.99,
+     "end": 34.44
+    }
+   ],
+   "words": [
+    {
+     "text": "Next",
+     "start": 0.45,
+     "end": 0.925
+    },
+    {
+     "text": ",",
+     "start": 0.925,
+     "end": 1.0
+    },
+    {
+     "text": "validate",
+     "start": 1.0,
+     "end": 1.5
+    },
+    {
+     "text": "runs",
+     "start": 1.5,
+     "end": 1.775
+    },
+    {
+     "text": "twelve",
+     "start": 1.775,
+     "end": 2.125
+    },
+    {
+     "text": "rules",
+     "start": 2.125,
+     "end": 2.55
+    },
+    {
+     "text": "against",
+     "start": 2.55,
+     "end": 2.862
+    },
+    {
+     "text": "a",
+     "start": 2.862,
+     "end": 2.925
+    },
+    {
+     "text": "per-payer",
+     "start": 2.925,
+     "end": 3.425
+    },
+    {
+     "text": "table",
+     "start": 3.425,
+     "end": 4.075
+    },
+    {
+     "text": ".",
+     "start": 4.075,
+     "end": 4.225
+    },
+    {
+     "text": "Deductible",
+     "start": 4.795,
+     "end": 5.395
+    },
+    {
+     "text": "met",
+     "start": 5.395,
+     "end": 5.82
+    },
+    {
+     "text": "can't",
+     "start": 5.82,
+     "end": 6.12
+    },
+    {
+     "text": "exceed",
+     "start": 6.12,
+     "end": 6.482
+    },
+    {
+     "text": "the",
+     "start": 6.482,
+     "end": 6.57
+    },
+    {
+     "text": "deductible",
+     "start": 6.57,
+     "end": 7.42
+    },
+    {
+     "text": ".",
+     "start": 7.42,
+     "end": 7.57
+    },
+    {
+     "text": "Auth",
+     "start": 8.19,
+     "end": 8.44
+    },
+    {
+     "text": "must",
+     "start": 8.44,
+     "end": 8.64
+    },
+    {
+     "text": "match",
+     "start": 8.64,
+     "end": 8.902
+    },
+    {
+     "text": "the",
+     "start": 8.902,
+     "end": 8.99
+    },
+    {
+     "text": "payer's",
+     "start": 8.99,
+     "end": 9.365
+    },
+    {
+     "text": "rule",
+     "start": 9.365,
+     "end": 9.64
+    },
+    {
+     "text": "for",
+     "start": 9.64,
+     "end": 9.752
+    },
+    {
+     "text": "that",
+     "start": 9.752,
+     "end": 9.965
+    },
+    {
+     "text": "code",
+     "start": 9.965,
+     "end": 10.565
+    },
+    {
+     "text": ".",
+     "start": 10.565,
+     "end": 10.715
+    },
+    {
+     "text": "Then",
+     "start": 11.335,
+     "end": 11.56
+    },
+    {
+     "text": ",",
+     "start": 11.56,
+     "end": 11.61
+    },
+    {
+     "text": "route",
+     "start": 11.61,
+     "end": 11.797
+    },
+    {
+     "text": "decides",
+     "start": 11.797,
+     "end": 12.56
+    },
+    {
+     "text": ".",
+     "start": 12.56,
+     "end": 12.71
+    },
+    {
+     "text": "If",
+     "start": 13.255,
+     "end": 13.43
+    },
+    {
+     "text": "any",
+     "start": 13.43,
+     "end": 13.668
+    },
+    {
+     "text": "field",
+     "start": 13.668,
+     "end": 13.943
+    },
+    {
+     "text": "is",
+     "start": 13.943,
+     "end": 14.055
+    },
+    {
+     "text": "under",
+     "start": 14.055,
+     "end": 14.243
+    },
+    {
+     "text": "the",
+     "start": 14.243,
+     "end": 14.33
+    },
+    {
+     "text": "threshold",
+     "start": 14.33,
+     "end": 15.155
+    },
+    {
+     "text": ",",
+     "start": 15.155,
+     "end": 15.293
+    },
+    {
+     "text": "zero",
+     "start": 15.293,
+     "end": 15.68
+    },
+    {
+     "text": "point",
+     "start": 15.68,
+     "end": 15.968
+    },
+    {
+     "text": "eight",
+     "start": 15.968,
+     "end": 16.13
+    },
+    {
+     "text": "by",
+     "start": 16.13,
+     "end": 16.305
+    },
+    {
+     "text": "default",
+     "start": 16.305,
+     "end": 16.93
+    },
+    {
+     "text": ",",
+     "start": 16.93,
+     "end": 17.03
+    },
+    {
+     "text": "or",
+     "start": 17.03,
+     "end": 17.18
+    },
+    {
+     "text": "any",
+     "start": 17.18,
+     "end": 17.38
+    },
+    {
+     "text": "rule",
+     "start": 17.38,
+     "end": 17.63
+    },
+    {
+     "text": "fails",
+     "start": 17.63,
+     "end": 18.23
+    },
+    {
+     "text": ",",
+     "start": 18.23,
+     "end": 18.33
+    },
+    {
+     "text": "the",
+     "start": 18.33,
+     "end": 18.43
+    },
+    {
+     "text": "case",
+     "start": 18.43,
+     "end": 18.73
+    },
+    {
+     "text": "goes",
+     "start": 18.73,
+     "end": 19.005
+    },
+    {
+     "text": "to",
+     "start": 19.005,
+     "end": 19.105
+    },
+    {
+     "text": "review",
+     "start": 19.105,
+     "end": 19.73
+    },
+    {
+     "text": ".",
+     "start": 19.73,
+     "end": 19.905
+    },
+    {
+     "text": "Otherwise",
+     "start": 20.475,
+     "end": 20.975
+    },
+    {
+     "text": ",",
+     "start": 20.975,
+     "end": 21.025
+    },
+    {
+     "text": "it's",
+     "start": 21.025,
+     "end": 21.15
+    },
+    {
+     "text": "auto-approved",
+     "start": 21.15,
+     "end": 22.15
+    },
+    {
+     "text": ".",
+     "start": 22.15,
+     "end": 22.3
+    },
+    {
+     "text": "Flagged",
+     "start": 22.895,
+     "end": 23.245
+    },
+    {
+     "text": "cases",
+     "start": 23.245,
+     "end": 23.62
+    },
+    {
+     "text": "sort",
+     "start": 23.62,
+     "end": 23.795
+    },
+    {
+     "text": "by",
+     "start": 23.795,
+     "end": 23.97
+    },
+    {
+     "text": "risk",
+     "start": 23.97,
+     "end": 24.52
+    },
+    {
+     "text": ".",
+     "start": 24.52,
+     "end": 24.67
+    },
+    {
+     "text": "At",
+     "start": 25.215,
+     "end": 25.377
+    },
+    {
+     "text": "zero",
+     "start": 25.377,
+     "end": 25.715
+    },
+    {
+     "text": "point",
+     "start": 25.715,
+     "end": 25.965
+    },
+    {
+     "text": "eight",
+     "start": 25.965,
+     "end": 26.465
+    },
+    {
+     "text": ",",
+     "start": 26.465,
+     "end": 26.602
+    },
+    {
+     "text": "version",
+     "start": 26.602,
+     "end": 27.015
+    },
+    {
+     "text": "one",
+     "start": 27.015,
+     "end": 27.477
+    },
+    {
+     "text": "auto-approves",
+     "start": 27.477,
+     "end": 28.227
+    },
+    {
+     "text": "thirty-two",
+     "start": 28.227,
+     "end": 28.74
+    },
+    {
+     "text": "percent",
+     "start": 28.74,
+     "end": 29.078
+    },
+    {
+     "text": "of",
+     "start": 29.078,
+     "end": 29.165
+    },
+    {
+     "text": "cases",
+     "start": 29.165,
+     "end": 30.015
+    },
+    {
+     "text": ",",
+     "start": 30.015,
+     "end": 30.115
+    },
+    {
+     "text": "and",
+     "start": 30.115,
+     "end": 30.227
+    },
+    {
+     "text": "escaped",
+     "start": 30.227,
+     "end": 30.677
+    },
+    {
+     "text": "errors",
+     "start": 30.677,
+     "end": 31.127
+    },
+    {
+     "text": "fall",
+     "start": 31.127,
+     "end": 31.49
+    },
+    {
+     "text": "from",
+     "start": 31.49,
+     "end": 31.703
+    },
+    {
+     "text": "seventy-seven",
+     "start": 31.703,
+     "end": 32.44
+    },
+    {
+     "text": "percent",
+     "start": 32.44,
+     "end": 32.777
+    },
+    {
+     "text": "of",
+     "start": 32.777,
+     "end": 32.865
+    },
+    {
+     "text": "cases",
+     "start": 32.865,
+     "end": 33.315
+    },
+    {
+     "text": "to",
+     "start": 33.315,
+     "end": 33.44
+    },
+    {
+     "text": "thirteen",
+     "start": 33.44,
+     "end": 34.19
+    },
+    {
+     "text": ".",
+     "start": 34.19,
+     "end": 34.34
+    }
+   ]
+  },
+  {
+   "id": "05",
+   "title": "Trace, part 3: the reviewer closes the loop",
+   "start": 119.58,
+   "duration": 22.085,
+   "audio_duration": 21.485,
+   "pad": 0.6,
+   "sentences": [
+    {
+     "text": "On the case page, source spans glow red for a failed rule, and amber for low confidence.",
+     "start": 0.15,
+     "end": 5.875
+    },
+    {
+     "text": "The reviewer fixes a value, and saves it as gold.",
+     "start": 6.095,
+     "end": 9.445
+    },
+    {
+     "text": "That write is append-only: a new row tagged human, with a timestamp, and the latest row wins.",
+     "start": 9.665,
+     "end": 15.84
+    },
+    {
+     "text": "The gold revision changes, so the cached snapshot rebuilds, and accuracy recomputes.",
+     "start": 16.06,
+     "end": 21.485
+    }
+   ],
+   "words": [
+    {
+     "text": "On",
+     "start": 0.4,
+     "end": 0.512
+    },
+    {
+     "text": "the",
+     "start": 0.512,
+     "end": 0.6
+    },
+    {
+     "text": "case",
+     "start": 0.6,
+     "end": 0.9
+    },
+    {
+     "text": "page",
+     "start": 0.9,
+     "end": 1.4
+    },
+    {
+     "text": ",",
+     "start": 1.4,
+     "end": 1.537
+    },
+    {
+     "text": "source",
+     "start": 1.537,
+     "end": 1.8
+    },
+    {
+     "text": "spans",
+     "start": 1.8,
+     "end": 2.212
+    },
+    {
+     "text": "glow",
+     "start": 2.212,
+     "end": 2.525
+    },
+    {
+     "text": "red",
+     "start": 2.525,
+     "end": 2.75
+    },
+    {
+     "text": "for",
+     "start": 2.75,
+     "end": 2.862
+    },
+    {
+     "text": "a",
+     "start": 2.862,
+     "end": 2.925
+    },
+    {
+     "text": "failed",
+     "start": 2.925,
+     "end": 3.275
+    },
+    {
+     "text": "rule",
+     "start": 3.275,
+     "end": 3.8
+    },
+    {
+     "text": ",",
+     "start": 3.8,
+     "end": 3.9
+    },
+    {
+     "text": "and",
+     "start": 3.9,
+     "end": 4.038
+    },
+    {
+     "text": "amber",
+     "start": 4.038,
+     "end": 4.425
+    },
+    {
+     "text": "for",
+     "start": 4.425,
+     "end": 4.575
+    },
+    {
+     "text": "low",
+     "start": 4.575,
+     "end": 4.8
+    },
+    {
+     "text": "confidence",
+     "start": 4.8,
+     "end": 5.625
+    },
+    {
+     "text": ".",
+     "start": 5.625,
+     "end": 5.775
+    },
+    {
+     "text": "The",
+     "start": 6.345,
+     "end": 6.42
+    },
+    {
+     "text": "reviewer",
+     "start": 6.42,
+     "end": 6.87
+    },
+    {
+     "text": "fixes",
+     "start": 6.87,
+     "end": 7.182
+    },
+    {
+     "text": "a",
+     "start": 7.182,
+     "end": 7.232
+    },
+    {
+     "text": "value",
+     "start": 7.232,
+     "end": 7.795
+    },
+    {
+     "text": ",",
+     "start": 7.795,
+     "end": 7.895
+    },
+    {
+     "text": "and",
+     "start": 7.895,
+     "end": 8.032
+    },
+    {
+     "text": "saves",
+     "start": 8.032,
+     "end": 8.332
+    },
+    {
+     "text": "it",
+     "start": 8.332,
+     "end": 8.42
+    },
+    {
+     "text": "as",
+     "start": 8.42,
+     "end": 8.57
+    },
+    {
+     "text": "gold",
+     "start": 8.57,
+     "end": 9.195
+    },
+    {
+     "text": ".",
+     "start": 9.195,
+     "end": 9.345
+    },
+    {
+     "text": "That",
+     "start": 9.915,
+     "end": 10.14
+    },
+    {
+     "text": "write",
+     "start": 10.14,
+     "end": 10.39
+    },
+    {
+     "text": "is",
+     "start": 10.39,
+     "end": 10.515
+    },
+    {
+     "text": "append-only",
+     "start": 10.515,
+     "end": 11.54
+    },
+    {
+     "text": ":",
+     "start": 11.54,
+     "end": 11.678
+    },
+    {
+     "text": "a",
+     "start": 11.678,
+     "end": 11.803
+    },
+    {
+     "text": "new",
+     "start": 11.803,
+     "end": 12.04
+    },
+    {
+     "text": "row",
+     "start": 12.04,
+     "end": 12.29
+    },
+    {
+     "text": "tagged",
+     "start": 12.29,
+     "end": 12.615
+    },
+    {
+     "text": "human",
+     "start": 12.615,
+     "end": 13.115
+    },
+    {
+     "text": ",",
+     "start": 13.115,
+     "end": 13.19
+    },
+    {
+     "text": "with",
+     "start": 13.19,
+     "end": 13.328
+    },
+    {
+     "text": "a",
+     "start": 13.328,
+     "end": 13.39
+    },
+    {
+     "text": "timestamp",
+     "start": 13.39,
+     "end": 14.09
+    },
+    {
+     "text": ",",
+     "start": 14.09,
+     "end": 14.14
+    },
+    {
+     "text": "and",
+     "start": 14.14,
+     "end": 14.253
+    },
+    {
+     "text": "the",
+     "start": 14.253,
+     "end": 14.34
+    },
+    {
+     "text": "latest",
+     "start": 14.34,
+     "end": 14.715
+    },
+    {
+     "text": "row",
+     "start": 14.715,
+     "end": 14.965
+    },
+    {
+     "text": "wins",
+     "start": 14.965,
+     "end": 15.59
+    },
+    {
+     "text": ".",
+     "start": 15.59,
+     "end": 15.74
+    },
+    {
+     "text": "The",
+     "start": 16.31,
+     "end": 16.385
+    },
+    {
+     "text": "gold",
+     "start": 16.385,
+     "end": 16.635
+    },
+    {
+     "text": "revision",
+     "start": 16.635,
+     "end": 17.01
+    },
+    {
+     "text": "changes",
+     "start": 17.01,
+     "end": 17.76
+    },
+    {
+     "text": ",",
+     "start": 17.76,
+     "end": 17.86
+    },
+    {
+     "text": "so",
+     "start": 17.86,
+     "end": 17.997
+    },
+    {
+     "text": "the",
+     "start": 17.997,
+     "end": 18.098
+    },
+    {
+     "text": "cached",
+     "start": 18.098,
+     "end": 18.485
+    },
+    {
+     "text": "snapshot",
+     "start": 18.485,
+     "end": 19.01
+    },
+    {
+     "text": "rebuilds",
+     "start": 19.01,
+     "end": 19.635
+    },
+    {
+     "text": ",",
+     "start": 19.635,
+     "end": 19.71
+    },
+    {
+     "text": "and",
+     "start": 19.71,
+     "end": 19.872
+    },
+    {
+     "text": "accuracy",
+     "start": 19.872,
+     "end": 20.36
+    },
+    {
+     "text": "recomputes",
+     "start": 20.36,
+     "end": 21.26
+    },
+    {
+     "text": ".",
+     "start": 21.26,
+     "end": 21.385
+    }
+   ]
+  },
+  {
+   "id": "06",
+   "title": "The eval engine and A/B",
+   "start": 141.665,
+   "duration": 32.295,
+   "audio_duration": 31.695,
+   "pad": 0.6,
+   "sentences": [
+    {
+     "text": "Scoring is exact match after normalization, so twenty-five dollars and twenty-five point zero zero are equal.",
+     "start": 0.15,
+     "end": 7.525
+    },
+    {
+     "text": "For A/B, a seeded hash of the case I-D splits cases fifty-fifty.",
+     "start": 7.745,
+     "end": 12.57
+    },
+    {
+     "text": "The bootstrap resamples whole cases, because fields within a case are correlated.",
+     "start": 12.79,
+     "end": 17.815
+    },
+    {
+     "text": "Version two fixes session limits and place of service.",
+     "start": 18.035,
+     "end": 21.61
+    },
+    {
+     "text": "But copay drops thirty-nine points for one payer, Northwind.",
+     "start": 21.83,
+     "end": 25.58
+    },
+    {
+     "text": "Averaged across payers, that looks modest.",
+     "start": 25.8,
+     "end": 28.75
+    },
+    {
+     "text": "Any significant regression means hold.",
+     "start": 28.97,
+     "end": 31.695
+    }
+   ],
+   "words": [
+    {
+     "text": "Scoring",
+     "start": 0.4,
+     "end": 0.912
+    },
+    {
+     "text": "is",
+     "start": 0.912,
+     "end": 1.075
+    },
+    {
+     "text": "exact",
+     "start": 1.075,
+     "end": 1.587
+    },
+    {
+     "text": "match",
+     "start": 1.587,
+     "end": 2.0
+    },
+    {
+     "text": "after",
+     "start": 2.0,
+     "end": 2.275
+    },
+    {
+     "text": "normalization",
+     "start": 2.275,
+     "end": 3.35
+    },
+    {
+     "text": ",",
+     "start": 3.35,
+     "end": 3.45
+    },
+    {
+     "text": "so",
+     "start": 3.45,
+     "end": 3.625
+    },
+    {
+     "text": "twenty-five",
+     "start": 3.625,
+     "end": 4.15
+    },
+    {
+     "text": "dollars",
+     "start": 4.15,
+     "end": 4.788
+    },
+    {
+     "text": "and",
+     "start": 4.788,
+     "end": 4.925
+    },
+    {
+     "text": "twenty-five",
+     "start": 4.925,
+     "end": 5.5
+    },
+    {
+     "text": "point",
+     "start": 5.5,
+     "end": 5.775
+    },
+    {
+     "text": "zero",
+     "start": 5.775,
+     "end": 6.1
+    },
+    {
+     "text": "zero",
+     "start": 6.1,
+     "end": 6.5
+    },
+    {
+     "text": "are",
+     "start": 6.5,
+     "end": 6.625
+    },
+    {
+     "text": "equal",
+     "start": 6.625,
+     "end": 7.275
+    },
+    {
+     "text": ".",
+     "start": 7.275,
+     "end": 7.425
+    },
+    {
+     "text": "For",
+     "start": 7.995,
+     "end": 8.145
+    },
+    {
+     "text": "A/B",
+     "start": 8.145,
+     "end": 8.77
+    },
+    {
+     "text": ",",
+     "start": 8.77,
+     "end": 8.895
+    },
+    {
+     "text": "a",
+     "start": 8.895,
+     "end": 9.008
+    },
+    {
+     "text": "seeded",
+     "start": 9.008,
+     "end": 9.345
+    },
+    {
+     "text": "hash",
+     "start": 9.345,
+     "end": 9.607
+    },
+    {
+     "text": "of",
+     "start": 9.607,
+     "end": 9.683
+    },
+    {
+     "text": "the",
+     "start": 9.683,
+     "end": 9.77
+    },
+    {
+     "text": "case",
+     "start": 9.77,
+     "end": 10.133
+    },
+    {
+     "text": "I-D",
+     "start": 10.133,
+     "end": 10.508
+    },
+    {
+     "text": "splits",
+     "start": 10.508,
+     "end": 10.895
+    },
+    {
+     "text": "cases",
+     "start": 10.895,
+     "end": 11.345
+    },
+    {
+     "text": "fifty-fifty",
+     "start": 11.345,
+     "end": 12.32
+    },
+    {
+     "text": ".",
+     "start": 12.32,
+     "end": 12.47
+    },
+    {
+     "text": "The",
+     "start": 13.04,
+     "end": 13.115
+    },
+    {
+     "text": "bootstrap",
+     "start": 13.115,
+     "end": 13.665
+    },
+    {
+     "text": "resamples",
+     "start": 13.665,
+     "end": 14.24
+    },
+    {
+     "text": "whole",
+     "start": 14.24,
+     "end": 14.49
+    },
+    {
+     "text": "cases",
+     "start": 14.49,
+     "end": 15.215
+    },
+    {
+     "text": ",",
+     "start": 15.215,
+     "end": 15.315
+    },
+    {
+     "text": "because",
+     "start": 15.315,
+     "end": 15.652
+    },
+    {
+     "text": "fields",
+     "start": 15.652,
+     "end": 15.978
+    },
+    {
+     "text": "within",
+     "start": 15.978,
+     "end": 16.178
+    },
+    {
+     "text": "a",
+     "start": 16.178,
+     "end": 16.24
+    },
+    {
+     "text": "case",
+     "start": 16.24,
+     "end": 16.59
+    },
+    {
+     "text": "are",
+     "start": 16.59,
+     "end": 16.715
+    },
+    {
+     "text": "correlated",
+     "start": 16.715,
+     "end": 17.565
+    },
+    {
+     "text": ".",
+     "start": 17.565,
+     "end": 17.715
+    },
+    {
+     "text": "Version",
+     "start": 18.31,
+     "end": 18.648
+    },
+    {
+     "text": "two",
+     "start": 18.648,
+     "end": 18.985
+    },
+    {
+     "text": "fixes",
+     "start": 18.985,
+     "end": 19.335
+    },
+    {
+     "text": "session",
+     "start": 19.335,
+     "end": 19.66
+    },
+    {
+     "text": "limits",
+     "start": 19.66,
+     "end": 20.148
+    },
+    {
+     "text": "and",
+     "start": 20.148,
+     "end": 20.285
+    },
+    {
+     "text": "place",
+     "start": 20.285,
+     "end": 20.573
+    },
+    {
+     "text": "of",
+     "start": 20.573,
+     "end": 20.66
+    },
+    {
+     "text": "service",
+     "start": 20.66,
+     "end": 21.36
+    },
+    {
+     "text": ".",
+     "start": 21.36,
+     "end": 21.51
+    },
+    {
+     "text": "But",
+     "start": 22.055,
+     "end": 22.18
+    },
+    {
+     "text": "copay",
+     "start": 22.18,
+     "end": 22.53
+    },
+    {
+     "text": "drops",
+     "start": 22.53,
+     "end": 22.83
+    },
+    {
+     "text": "thirty-nine",
+     "start": 22.83,
+     "end": 23.28
+    },
+    {
+     "text": "points",
+     "start": 23.28,
+     "end": 23.605
+    },
+    {
+     "text": "for",
+     "start": 23.605,
+     "end": 23.73
+    },
+    {
+     "text": "one",
+     "start": 23.73,
+     "end": 23.93
+    },
+    {
+     "text": "payer",
+     "start": 23.93,
+     "end": 24.405
+    },
+    {
+     "text": ",",
+     "start": 24.405,
+     "end": 24.505
+    },
+    {
+     "text": "Northwind",
+     "start": 24.505,
+     "end": 25.33
+    },
+    {
+     "text": ".",
+     "start": 25.33,
+     "end": 25.48
+    },
+    {
+     "text": "Averaged",
+     "start": 26.075,
+     "end": 26.437
+    },
+    {
+     "text": "across",
+     "start": 26.437,
+     "end": 26.775
+    },
+    {
+     "text": "payers",
+     "start": 26.775,
+     "end": 27.3
+    },
+    {
+     "text": ",",
+     "start": 27.3,
+     "end": 27.375
+    },
+    {
+     "text": "that",
+     "start": 27.375,
+     "end": 27.537
+    },
+    {
+     "text": "looks",
+     "start": 27.537,
+     "end": 27.775
+    },
+    {
+     "text": "modest",
+     "start": 27.775,
+     "end": 28.5
+    },
+    {
+     "text": ".",
+     "start": 28.5,
+     "end": 28.65
+    },
+    {
+     "text": "Any",
+     "start": 29.245,
+     "end": 29.507
+    },
+    {
+     "text": "significant",
+     "start": 29.507,
+     "end": 30.057
+    },
+    {
+     "text": "regression",
+     "start": 30.057,
+     "end": 30.57
+    },
+    {
+     "text": "means",
+     "start": 30.57,
+     "end": 30.845
+    },
+    {
+     "text": "hold",
+     "start": 30.845,
+     "end": 31.445
+    },
+    {
+     "text": ".",
+     "start": 31.445,
+     "end": 31.595
+    }
+   ]
+  },
+  {
+   "id": "07",
+   "title": "Running it, and the gotchas",
+   "start": 173.96,
+   "duration": 32.215,
+   "audio_duration": 31.615,
+   "pad": 0.6,
+   "sentences": [
+    {
+     "text": "To run it, type make demo.",
+     "start": 0.15,
+     "end": 2.3
+    },
+    {
+     "text": "It generates the data, runs both versions, and serves the UI on port eight thousand, with no A-P-I keys.",
+     "start": 2.52,
+     "end": 9.695
+    },
+    {
+     "text": "Now, some gotchas.",
+     "start": 9.915,
+     "end": 11.64
+    },
+    {
+     "text": "The mock extractor isn't a model.",
+     "start": 11.86,
+     "end": 14.31
+    },
+    {
+     "text": "It starts from the gold labels and injects seeded errors, so its numbers say nothing about a real system.",
+     "start": 14.53,
+     "end": 20.83
+    },
+    {
+     "text": "Make demo wipes reviewer labels.",
+     "start": 21.05,
+     "end": 23.4
+    },
+    {
+     "text": "Human labels get no second review.",
+     "start": 23.62,
+     "end": 26.27
+    },
+    {
+     "text": "And escaped errors are counted against all cases, not just auto-approved ones.",
+     "start": 26.49,
+     "end": 31.615
+    }
+   ],
+   "words": [
+    {
+     "text": "To",
+     "start": 0.4,
+     "end": 0.525
+    },
+    {
+     "text": "run",
+     "start": 0.525,
+     "end": 0.775
+    },
+    {
+     "text": "it",
+     "start": 0.775,
+     "end": 0.9
+    },
+    {
+     "text": ",",
+     "start": 0.9,
+     "end": 0.975
+    },
+    {
+     "text": "type",
+     "start": 0.975,
+     "end": 1.212
+    },
+    {
+     "text": "make",
+     "start": 1.212,
+     "end": 1.425
+    },
+    {
+     "text": "demo",
+     "start": 1.425,
+     "end": 2.025
+    },
+    {
+     "text": ".",
+     "start": 2.025,
+     "end": 2.2
+    },
+    {
+     "text": "It",
+     "start": 2.745,
+     "end": 2.87
+    },
+    {
+     "text": "generates",
+     "start": 2.87,
+     "end": 3.383
+    },
+    {
+     "text": "the",
+     "start": 3.383,
+     "end": 3.47
+    },
+    {
+     "text": "data",
+     "start": 3.47,
+     "end": 3.995
+    },
+    {
+     "text": ",",
+     "start": 3.995,
+     "end": 4.12
+    },
+    {
+     "text": "runs",
+     "start": 4.12,
+     "end": 4.445
+    },
+    {
+     "text": "both",
+     "start": 4.445,
+     "end": 4.72
+    },
+    {
+     "text": "versions",
+     "start": 4.72,
+     "end": 5.345
+    },
+    {
+     "text": ",",
+     "start": 5.345,
+     "end": 5.42
+    },
+    {
+     "text": "and",
+     "start": 5.42,
+     "end": 5.558
+    },
+    {
+     "text": "serves",
+     "start": 5.558,
+     "end": 5.883
+    },
+    {
+     "text": "the",
+     "start": 5.883,
+     "end": 5.982
+    },
+    {
+     "text": "UI",
+     "start": 5.982,
+     "end": 6.42
+    },
+    {
+     "text": "on",
+     "start": 6.42,
+     "end": 6.545
+    },
+    {
+     "text": "port",
+     "start": 6.545,
+     "end": 6.845
+    },
+    {
+     "text": "eight",
+     "start": 6.845,
+     "end": 7.045
+    },
+    {
+     "text": "thousand",
+     "start": 7.045,
+     "end": 7.72
+    },
+    {
+     "text": ",",
+     "start": 7.72,
+     "end": 7.82
+    },
+    {
+     "text": "with",
+     "start": 7.82,
+     "end": 8.008
+    },
+    {
+     "text": "no",
+     "start": 8.008,
+     "end": 8.283
+    },
+    {
+     "text": "A-P-I",
+     "start": 8.283,
+     "end": 8.795
+    },
+    {
+     "text": "keys",
+     "start": 8.795,
+     "end": 9.445
+    },
+    {
+     "text": ".",
+     "start": 9.445,
+     "end": 9.595
+    },
+    {
+     "text": "Now",
+     "start": 10.24,
+     "end": 10.415
+    },
+    {
+     "text": ",",
+     "start": 10.415,
+     "end": 10.465
+    },
+    {
+     "text": "some",
+     "start": 10.465,
+     "end": 10.615
+    },
+    {
+     "text": "gotchas",
+     "start": 10.615,
+     "end": 11.39
+    },
+    {
+     "text": ".",
+     "start": 11.39,
+     "end": 11.54
+    },
+    {
+     "text": "The",
+     "start": 12.11,
+     "end": 12.185
+    },
+    {
+     "text": "mock",
+     "start": 12.185,
+     "end": 12.448
+    },
+    {
+     "text": "extractor",
+     "start": 12.448,
+     "end": 13.123
+    },
+    {
+     "text": "isn't",
+     "start": 13.123,
+     "end": 13.373
+    },
+    {
+     "text": "a",
+     "start": 13.373,
+     "end": 13.435
+    },
+    {
+     "text": "model",
+     "start": 13.435,
+     "end": 14.06
+    },
+    {
+     "text": ".",
+     "start": 14.06,
+     "end": 14.21
+    },
+    {
+     "text": "It",
+     "start": 14.755,
+     "end": 14.88
+    },
+    {
+     "text": "starts",
+     "start": 14.88,
+     "end": 15.218
+    },
+    {
+     "text": "from",
+     "start": 15.218,
+     "end": 15.343
+    },
+    {
+     "text": "the",
+     "start": 15.343,
+     "end": 15.43
+    },
+    {
+     "text": "gold",
+     "start": 15.43,
+     "end": 15.73
+    },
+    {
+     "text": "labels",
+     "start": 15.73,
+     "end": 16.343
+    },
+    {
+     "text": "and",
+     "start": 16.343,
+     "end": 16.468
+    },
+    {
+     "text": "injects",
+     "start": 16.468,
+     "end": 16.943
+    },
+    {
+     "text": "seeded",
+     "start": 16.943,
+     "end": 17.305
+    },
+    {
+     "text": "errors",
+     "start": 17.305,
+     "end": 18.03
+    },
+    {
+     "text": ",",
+     "start": 18.03,
+     "end": 18.13
+    },
+    {
+     "text": "so",
+     "start": 18.13,
+     "end": 18.268
+    },
+    {
+     "text": "its",
+     "start": 18.268,
+     "end": 18.43
+    },
+    {
+     "text": "numbers",
+     "start": 18.43,
+     "end": 18.805
+    },
+    {
+     "text": "say",
+     "start": 18.805,
+     "end": 19.005
+    },
+    {
+     "text": "nothing",
+     "start": 19.005,
+     "end": 19.38
+    },
+    {
+     "text": "about",
+     "start": 19.38,
+     "end": 19.618
+    },
+    {
+     "text": "a",
+     "start": 19.618,
+     "end": 19.68
+    },
+    {
+     "text": "real",
+     "start": 19.68,
+     "end": 19.955
+    },
+    {
+     "text": "system",
+     "start": 19.955,
+     "end": 20.605
+    },
+    {
+     "text": ".",
+     "start": 20.605,
+     "end": 20.73
+    },
+    {
+     "text": "Make",
+     "start": 21.325,
+     "end": 21.55
+    },
+    {
+     "text": "demo",
+     "start": 21.55,
+     "end": 21.9
+    },
+    {
+     "text": "wipes",
+     "start": 21.9,
+     "end": 22.175
+    },
+    {
+     "text": "reviewer",
+     "start": 22.175,
+     "end": 22.5
+    },
+    {
+     "text": "labels",
+     "start": 22.5,
+     "end": 23.15
+    },
+    {
+     "text": ".",
+     "start": 23.15,
+     "end": 23.3
+    },
+    {
+     "text": "Human",
+     "start": 23.895,
+     "end": 24.195
+    },
+    {
+     "text": "labels",
+     "start": 24.195,
+     "end": 24.595
+    },
+    {
+     "text": "get",
+     "start": 24.595,
+     "end": 24.795
+    },
+    {
+     "text": "no",
+     "start": 24.795,
+     "end": 25.058
+    },
+    {
+     "text": "second",
+     "start": 25.058,
+     "end": 25.383
+    },
+    {
+     "text": "review",
+     "start": 25.383,
+     "end": 25.995
+    },
+    {
+     "text": ".",
+     "start": 25.995,
+     "end": 26.17
+    },
+    {
+     "text": "And",
+     "start": 26.74,
+     "end": 26.852
+    },
+    {
+     "text": "escaped",
+     "start": 26.852,
+     "end": 27.315
+    },
+    {
+     "text": "errors",
+     "start": 27.315,
+     "end": 27.765
+    },
+    {
+     "text": "are",
+     "start": 27.765,
+     "end": 27.89
+    },
+    {
+     "text": "counted",
+     "start": 27.89,
+     "end": 28.252
+    },
+    {
+     "text": "against",
+     "start": 28.252,
+     "end": 28.59
+    },
+    {
+     "text": "all",
+     "start": 28.59,
+     "end": 28.815
+    },
+    {
+     "text": "cases",
+     "start": 28.815,
+     "end": 29.59
+    },
+    {
+     "text": ",",
+     "start": 29.59,
+     "end": 29.69
+    },
+    {
+     "text": "not",
+     "start": 29.69,
+     "end": 29.915
+    },
+    {
+     "text": "just",
+     "start": 29.915,
+     "end": 30.115
+    },
+    {
+     "text": "auto-approved",
+     "start": 30.115,
+     "end": 30.79
+    },
+    {
+     "text": "ones",
+     "start": 30.79,
+     "end": 31.365
+    },
+    {
+     "text": ".",
+     "start": 31.365,
+     "end": 31.515
+    }
+   ]
+  },
+  {
+   "id": "08",
+   "title": "Recap and next steps",
+   "start": 206.175,
+   "duration": 25.25,
+   "audio_duration": 24.65,
+   "pad": 0.6,
+   "sentences": [
+    {
+     "text": "To recap.",
+     "start": 0.15,
+     "end": 1.625
+    },
+    {
+     "text": "Score fields, not cases.",
+     "start": 1.845,
+     "end": 3.92
+    },
+    {
+     "text": "Route on confidence and rules.",
+     "start": 4.14,
+     "end": 6.34
+    },
+    {
+     "text": "Reviewer fixes become gold.",
+     "start": 6.56,
+     "end": 8.835
+    },
+    {
+     "text": "Compare prompts per payer, so regressions can't hide in averages.",
+     "start": 9.055,
+     "end": 13.23
+    },
+    {
+     "text": "Next steps: calibrated thresholds per field, weighting errors by billing impact, double review of human labels, and the same eval on real, de-identified model output.",
+     "start": 13.45,
+     "end": 24.65
+    }
+   ],
+   "words": [
+    {
+     "text": "To",
+     "start": 0.475,
+     "end": 0.6
+    },
+    {
+     "text": "recap",
+     "start": 0.6,
+     "end": 1.35
+    },
+    {
+     "text": ".",
+     "start": 1.35,
+     "end": 1.525
+    },
+    {
+     "text": "Score",
+     "start": 2.095,
+     "end": 2.37
+    },
+    {
+     "text": "fields",
+     "start": 2.37,
+     "end": 2.67
+    },
+    {
+     "text": ",",
+     "start": 2.67,
+     "end": 2.708
+    },
+    {
+     "text": "not",
+     "start": 2.708,
+     "end": 2.895
+    },
+    {
+     "text": "cases",
+     "start": 2.895,
+     "end": 3.67
+    },
+    {
+     "text": ".",
+     "start": 3.67,
+     "end": 3.82
+    },
+    {
+     "text": "Route",
+     "start": 4.44,
+     "end": 4.627
+    },
+    {
+     "text": "on",
+     "start": 4.627,
+     "end": 4.74
+    },
+    {
+     "text": "confidence",
+     "start": 4.74,
+     "end": 5.315
+    },
+    {
+     "text": "and",
+     "start": 5.315,
+     "end": 5.44
+    },
+    {
+     "text": "rules",
+     "start": 5.44,
+     "end": 6.09
+    },
+    {
+     "text": ".",
+     "start": 6.09,
+     "end": 6.24
+    },
+    {
+     "text": "Reviewer",
+     "start": 6.835,
+     "end": 7.235
+    },
+    {
+     "text": "fixes",
+     "start": 7.235,
+     "end": 7.635
+    },
+    {
+     "text": "become",
+     "start": 7.635,
+     "end": 7.985
+    },
+    {
+     "text": "gold",
+     "start": 7.985,
+     "end": 8.585
+    },
+    {
+     "text": ".",
+     "start": 8.585,
+     "end": 8.735
+    },
+    {
+     "text": "Compare",
+     "start": 9.305,
+     "end": 9.68
+    },
+    {
+     "text": "prompts",
+     "start": 9.68,
+     "end": 9.98
+    },
+    {
+     "text": "per",
+     "start": 9.98,
+     "end": 10.105
+    },
+    {
+     "text": "payer",
+     "start": 10.105,
+     "end": 10.68
+    },
+    {
+     "text": ",",
+     "start": 10.68,
+     "end": 10.78
+    },
+    {
+     "text": "so",
+     "start": 10.78,
+     "end": 10.955
+    },
+    {
+     "text": "regressions",
+     "start": 10.955,
+     "end": 11.555
+    },
+    {
+     "text": "can't",
+     "start": 11.555,
+     "end": 11.805
+    },
+    {
+     "text": "hide",
+     "start": 11.805,
+     "end": 12.067
+    },
+    {
+     "text": "in",
+     "start": 12.067,
+     "end": 12.155
+    },
+    {
+     "text": "averages",
+     "start": 12.155,
+     "end": 12.98
+    },
+    {
+     "text": ".",
+     "start": 12.98,
+     "end": 13.13
+    },
+    {
+     "text": "Next",
+     "start": 13.725,
+     "end": 13.963
+    },
+    {
+     "text": "steps",
+     "start": 13.963,
+     "end": 14.625
+    },
+    {
+     "text": ":",
+     "start": 14.625,
+     "end": 14.738
+    },
+    {
+     "text": "calibrated",
+     "start": 14.738,
+     "end": 15.35
+    },
+    {
+     "text": "thresholds",
+     "start": 15.35,
+     "end": 15.925
+    },
+    {
+     "text": "per",
+     "start": 15.925,
+     "end": 16.088
+    },
+    {
+     "text": "field",
+     "start": 16.088,
+     "end": 16.675
+    },
+    {
+     "text": ",",
+     "start": 16.675,
+     "end": 16.812
+    },
+    {
+     "text": "weighting",
+     "start": 16.812,
+     "end": 17.2
+    },
+    {
+     "text": "errors",
+     "start": 17.2,
+     "end": 17.625
+    },
+    {
+     "text": "by",
+     "start": 17.625,
+     "end": 17.8
+    },
+    {
+     "text": "billing",
+     "start": 17.8,
+     "end": 18.15
+    },
+    {
+     "text": "impact",
+     "start": 18.15,
+     "end": 18.875
+    },
+    {
+     "text": ",",
+     "start": 18.875,
+     "end": 19.013
+    },
+    {
+     "text": "double",
+     "start": 19.013,
+     "end": 19.35
+    },
+    {
+     "text": "review",
+     "start": 19.35,
+     "end": 19.7
+    },
+    {
+     "text": "of",
+     "start": 19.7,
+     "end": 19.8
+    },
+    {
+     "text": "human",
+     "start": 19.8,
+     "end": 20.125
+    },
+    {
+     "text": "labels",
+     "start": 20.125,
+     "end": 20.85
+    },
+    {
+     "text": ",",
+     "start": 20.85,
+     "end": 20.925
+    },
+    {
+     "text": "and",
+     "start": 20.925,
+     "end": 21.038
+    },
+    {
+     "text": "the",
+     "start": 21.038,
+     "end": 21.138
+    },
+    {
+     "text": "same",
+     "start": 21.138,
+     "end": 21.4
+    },
+    {
+     "text": "eval",
+     "start": 21.4,
+     "end": 21.825
+    },
+    {
+     "text": "on",
+     "start": 21.825,
+     "end": 22.038
+    },
+    {
+     "text": "real",
+     "start": 22.038,
+     "end": 22.45
+    },
+    {
+     "text": ",",
+     "start": 22.45,
+     "end": 22.5
+    },
+    {
+     "text": "de-identified",
+     "start": 22.5,
+     "end": 23.35
+    },
+    {
+     "text": "model",
+     "start": 23.35,
+     "end": 23.7
+    },
+    {
+     "text": "output",
+     "start": 23.7,
+     "end": 24.4
+    },
+    {
+     "text": ".",
+     "start": 24.4,
+     "end": 24.55
+    }
+   ]
+  },
+  {
+   "id": "09",
+   "title": "Closing card",
+   "start": 231.425,
+   "duration": 4.875,
+   "audio_duration": 1.875,
+   "pad": 3.0,
+   "sentences": [
+    {
+     "text": "Thank you for watching.",
+     "start": 0.15,
+     "end": 1.875
+    }
+   ],
+   "words": [
+    {
+     "text": "Thank",
+     "start": 0.45,
+     "end": 0.65
+    },
+    {
+     "text": "you",
+     "start": 0.65,
+     "end": 0.8
+    },
+    {
+     "text": "for",
+     "start": 0.8,
+     "end": 0.925
+    },
+    {
+     "text": "watching",
+     "start": 0.925,
+     "end": 1.625
+    },
+    {
+     "text": ".",
+     "start": 1.625,
+     "end": 1.775
+    }
+   ]
+  }
+ ]
+}

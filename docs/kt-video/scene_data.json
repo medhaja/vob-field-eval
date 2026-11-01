@@ -1,0 +1,523 @@
+{
+ "summary_v1": {
+  "field_accuracy": 0.9704044117647059,
+  "fields": 16320,
+  "cases": 240,
+  "case_accuracy": 0.225
+ },
+ "routing_v1": {
+  "threshold": 0.8,
+  "automation_rate": 0.3208,
+  "escaped_error_rate": 0.1333,
+  "escaped_cases": 32,
+  "errors_caught": 0.828,
+  "review_per_day": 136,
+  "auto_cases": 77
+ },
+ "baseline_v1": {
+  "automation_rate": 1.0,
+  "escaped_error_rate": 0.775
+ },
+ "summary_v2": {
+  "field_accuracy": 0.975796568627451,
+  "fields": 16320,
+  "cases": 240,
+  "case_accuracy": 0.5125
+ },
+ "routing_v2": {
+  "threshold": 0.8,
+  "automation_rate": 0.475,
+  "escaped_error_rate": 0.1125,
+  "escaped_cases": 27,
+  "errors_caught": 0.7692,
+  "review_per_day": 105,
+  "auto_cases": 114
+ },
+ "baseline_v2": {
+  "automation_rate": 1.0,
+  "escaped_error_rate": 0.4875
+ },
+ "sweep_v1": [
+  {
+   "threshold": 0.0,
+   "automation_rate": 0.7417,
+   "escaped_error_rate": 0.5292,
+   "escaped_cases": 127,
+   "errors_caught": 0.3172,
+   "review_per_day": 52,
+   "auto_cases": 178
+  },
+  {
+   "threshold": 0.05,
+   "automation_rate": 0.7417,
+   "escaped_error_rate": 0.5292,
+   "escaped_cases": 127,
+   "errors_caught": 0.3172,
+   "review_per_day": 52,
+   "auto_cases": 178
+  },
+  {
+   "threshold": 0.1,
+   "automation_rate": 0.7417,
+   "escaped_error_rate": 0.5292,
+   "escaped_cases": 127,
+   "errors_caught": 0.3172,
+   "review_per_day": 52,
+   "auto_cases": 178
+  },
+  {
+   "threshold": 0.15,
+   "automation_rate": 0.7417,
+   "escaped_error_rate": 0.5292,
+   "escaped_cases": 127,
+   "errors_caught": 0.3172,
+   "review_per_day": 52,
+   "auto_cases": 178
+  },
+  {
+   "threshold": 0.2,
+   "automation_rate": 0.7417,
+   "escaped_error_rate": 0.5292,
+   "escaped_cases": 127,
+   "errors_caught": 0.3172,
+   "review_per_day": 52,
+   "auto_cases": 178
+  },
+  {
+   "threshold": 0.25,
+   "automation_rate": 0.7417,
+   "escaped_error_rate": 0.5292,
+   "escaped_cases": 127,
+   "errors_caught": 0.3172,
+   "review_per_day": 52,
+   "auto_cases": 178
+  },
+  {
+   "threshold": 0.3,
+   "automation_rate": 0.7333,
+   "escaped_error_rate": 0.5208,
+   "escaped_cases": 125,
+   "errors_caught": 0.328,
+   "review_per_day": 53,
+   "auto_cases": 176
+  },
+  {
+   "threshold": 0.35,
+   "automation_rate": 0.7292,
+   "escaped_error_rate": 0.5167,
+   "escaped_cases": 124,
+   "errors_caught": 0.3333,
+   "review_per_day": 54,
+   "auto_cases": 175
+  },
+  {
+   "threshold": 0.4,
+   "automation_rate": 0.7042,
+   "escaped_error_rate": 0.4917,
+   "escaped_cases": 118,
+   "errors_caught": 0.3656,
+   "review_per_day": 59,
+   "auto_cases": 169
+  },
+  {
+   "threshold": 0.45,
+   "automation_rate": 0.7,
+   "escaped_error_rate": 0.4875,
+   "escaped_cases": 117,
+   "errors_caught": 0.371,
+   "review_per_day": 60,
+   "auto_cases": 168
+  },
+  {
+   "threshold": 0.5,
+   "automation_rate": 0.675,
+   "escaped_error_rate": 0.4625,
+   "escaped_cases": 111,
+   "errors_caught": 0.4032,
+   "review_per_day": 65,
+   "auto_cases": 162
+  },
+  {
+   "threshold": 0.55,
+   "automation_rate": 0.625,
+   "escaped_error_rate": 0.4125,
+   "escaped_cases": 99,
+   "errors_caught": 0.4677,
+   "review_per_day": 75,
+   "auto_cases": 150
+  },
+  {
+   "threshold": 0.6,
+   "automation_rate": 0.5708,
+   "escaped_error_rate": 0.3667,
+   "escaped_cases": 88,
+   "errors_caught": 0.5269,
+   "review_per_day": 86,
+   "auto_cases": 137
+  },
+  {
+   "threshold": 0.65,
+   "automation_rate": 0.5208,
+   "escaped_error_rate": 0.3167,
+   "escaped_cases": 76,
+   "errors_caught": 0.5914,
+   "review_per_day": 96,
+   "auto_cases": 125
+  },
+  {
+   "threshold": 0.7,
+   "automation_rate": 0.4583,
+   "escaped_error_rate": 0.2625,
+   "escaped_cases": 63,
+   "errors_caught": 0.6613,
+   "review_per_day": 108,
+   "auto_cases": 110
+  },
+  {
+   "threshold": 0.75,
+   "automation_rate": 0.4042,
+   "escaped_error_rate": 0.2083,
+   "escaped_cases": 50,
+   "errors_caught": 0.7312,
+   "review_per_day": 119,
+   "auto_cases": 97
+  },
+  {
+   "threshold": 0.8,
+   "automation_rate": 0.3208,
+   "escaped_error_rate": 0.1333,
+   "escaped_cases": 32,
+   "errors_caught": 0.828,
+   "review_per_day": 136,
+   "auto_cases": 77
+  },
+  {
+   "threshold": 0.85,
+   "automation_rate": 0.2625,
+   "escaped_error_rate": 0.0917,
+   "escaped_cases": 22,
+   "errors_caught": 0.8817,
+   "review_per_day": 148,
+   "auto_cases": 63
+  },
+  {
+   "threshold": 0.9,
+   "automation_rate": 0.2,
+   "escaped_error_rate": 0.05,
+   "escaped_cases": 12,
+   "errors_caught": 0.9355,
+   "review_per_day": 160,
+   "auto_cases": 48
+  },
+  {
+   "threshold": 0.95,
+   "automation_rate": 0.0,
+   "escaped_error_rate": 0.0,
+   "escaped_cases": 0,
+   "errors_caught": 1.0,
+   "review_per_day": 200,
+   "auto_cases": 0
+  },
+  {
+   "threshold": 1.0,
+   "automation_rate": 0.0,
+   "escaped_error_rate": 0.0,
+   "escaped_cases": 0,
+   "errors_caught": 1.0,
+   "review_per_day": 200,
+   "auto_cases": 0
+  }
+ ],
+ "n_cases": 240,
+ "n_edge": 60,
+ "queue": [
+  {
+   "case_id": "C-0222",
+   "payer": "Cedar Mutual Choice",
+   "risk": 89.2,
+   "reasons": [
+    "Telehealth and POS agree",
+    "Coverage status and core fields present"
+   ]
+  },
+  {
+   "case_id": "C-0126",
+   "payer": "Cedar Mutual Choice",
+   "risk": 88.4,
+   "reasons": [
+    "Telehealth and POS agree",
+    "4 low-confidence field(s)"
+   ]
+  },
+  {
+   "case_id": "C-0140",
+   "payer": "Harbor Employer Plan",
+   "risk": 86.2,
+   "reasons": [
+    "Coverage status and core fields present",
+    "1 low-confidence field(s)"
+   ]
+  },
+  {
+   "case_id": "C-0006",
+   "payer": "Cedar Mutual Choice",
+   "risk": 85.7,
+   "reasons": [
+    "Session limit present",
+    "2 low-confidence field(s)"
+   ]
+  },
+  {
+   "case_id": "C-0130",
+   "payer": "Cedar Mutual Choice",
+   "risk": 85.3,
+   "reasons": [
+    "Telehealth and POS agree",
+    "Coverage status and core fields present"
+   ]
+  }
+ ],
+ "queue_flagged": 163,
+ "case": {
+  "case_id": "C-0185",
+  "payer": "Northwind Health PPO",
+  "scenario": "deductible_no_amount",
+  "header": "NORTHWIND HEALTH PPO - ELIGIBILITY AND BENEFITS RESPONSE",
+  "lines": [
+   {
+    "text": "Coverage status: ACTIVE",
+    "marks": []
+   },
+   {
+    "text": "Plan year deductible (individual): applies - amount not returned",
+    "marks": [
+     {
+      "start": 35,
+      "end": 64,
+      "key": "plan.deductible",
+      "status": "fail"
+     }
+    ]
+   },
+   {
+    "text": "Out-of-pocket maximum: $4,500.00",
+    "marks": []
+   },
+   {
+    "text": "CPT    DESCRIPTION / BENEFIT DETAIL",
+    "marks": []
+   },
+   {
+    "text": "97151  … | Copay: $30.00 | Prior auth: Yes …",
+    "marks": [
+     {
+      "start": 18,
+      "end": 24,
+      "key": "97151.copay",
+      "status": "ok"
+     }
+    ]
+   },
+   {
+    "text": "97152  … | Visit limit: No limit | Max units/day: 16 | POS: 11, 12 …",
+    "marks": [
+     {
+      "start": 50,
+      "end": 52,
+      "key": "97152.units_per_day",
+      "status": "low"
+     }
+    ]
+   }
+  ],
+  "fields": [
+   {
+    "key": "plan.deductible",
+    "label": "Deductible",
+    "value": "—",
+    "gold": "$500",
+    "confidence": 0.497,
+    "status": "fail"
+   },
+   {
+    "key": "97152.units_per_day",
+    "label": "97152 Units/day",
+    "value": "8",
+    "gold": "16",
+    "confidence": 0.552,
+    "status": "low"
+   },
+   {
+    "key": "97151.copay",
+    "label": "97151 Copay",
+    "value": "$30",
+    "gold": "$30",
+    "confidence": 0.983,
+    "status": "ok"
+   }
+  ],
+  "reasons": [
+   "Coverage status and core fields present",
+   "2 low-confidence field(s)"
+  ],
+  "risk": 66.6,
+  "route": "review",
+  "route_v1": "review",
+  "copay_key": "97151.copay",
+  "spans": {
+   "plan.deductible": [
+    323,
+    352
+   ],
+   "97152.units_per_day": [
+    790,
+    792
+   ],
+   "97151.copay": [
+    519,
+    525
+   ]
+  }
+ },
+ "gold_rows": {
+  "rows": [
+   {
+    "id": 12895,
+    "case_id": "C-0185",
+    "field_key": "97152.copay",
+    "value": "30.0",
+    "source": "synthetic"
+   },
+   {
+    "id": 12897,
+    "case_id": "C-0185",
+    "field_key": "97152.auth_required",
+    "value": "false",
+    "source": "synthetic"
+   },
+   {
+    "id": 12899,
+    "case_id": "C-0185",
+    "field_key": "97152.units_per_day",
+    "value": "16",
+    "source": "synthetic"
+   }
+  ],
+  "revision": 16800,
+  "field": "97152.units_per_day"
+ },
+ "ab": {
+  "arm_sizes": {
+   "v1": 122,
+   "v2": 118
+  },
+  "sessions": {
+   "delta": 6.4,
+   "ci_low": 4.4,
+   "ci_high": 8.7,
+   "verdict": "better",
+   "cases_v1": 122,
+   "cases_v2": 118
+  },
+  "pos": {
+   "delta": 8.1,
+   "ci_low": 6.3,
+   "ci_high": 9.9,
+   "verdict": "better",
+   "cases_v1": 122,
+   "cases_v2": 118
+  },
+  "copay_all": {
+   "delta": -8.6,
+   "ci_low": -12.2,
+   "ci_high": -5.7,
+   "verdict": "worse",
+   "cases_v1": 122,
+   "cases_v2": 118
+  },
+  "copay_by_payer": {
+   "northwind": {
+    "delta": -39.1,
+    "ci_low": -46.1,
+    "ci_high": -32.6,
+    "verdict": "worse",
+    "cases_v1": 35,
+    "cases_v2": 25,
+    "name": "Northwind Health PPO"
+   },
+   "cedar": {
+    "delta": 0.5,
+    "ci_low": -0.8,
+    "ci_high": 1.8,
+    "verdict": "no clear change",
+    "cases_v1": 29,
+    "cases_v2": 31,
+    "name": "Cedar Mutual Choice"
+   },
+   "riverbend": {
+    "delta": -0.5,
+    "ci_low": -1.4,
+    "ci_high": 0.0,
+    "verdict": "no clear change",
+    "cases_v1": 34,
+    "cases_v2": 26,
+    "name": "Riverbend Community Medicaid MCO"
+   },
+   "harbor": {
+    "delta": -0.9,
+    "ci_low": -2.6,
+    "ci_high": 0.7,
+    "verdict": "no clear change",
+    "cases_v1": 24,
+    "cases_v2": 36,
+    "name": "Harbor Employer Plan"
+   }
+  },
+  "hint": {
+   "decision": "hold",
+   "n_worse": 2
+  },
+  "arms_first_40": [
+   "v1",
+   "v1",
+   "v1",
+   "v2",
+   "v2",
+   "v2",
+   "v1",
+   "v1",
+   "v2",
+   "v2",
+   "v1",
+   "v1",
+   "v2",
+   "v1",
+   "v1",
+   "v1",
+   "v1",
+   "v2",
+   "v2",
+   "v2",
+   "v1",
+   "v1",
+   "v1",
+   "v1",
+   "v1",
+   "v1",
+   "v2",
+   "v1",
+   "v1",
+   "v2",
+   "v2",
+   "v1",
+   "v2",
+   "v1",
+   "v2",
+   "v1",
+   "v1",
+   "v2",
+   "v1",
+   "v2"
+  ]
+ }
+}

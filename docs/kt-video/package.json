@@ -1,0 +1,14 @@
+{
+  "name": "vob-field-eval-kt-video",
+  "private": true,
+  "type": "module",
+  "description": "Narrated walkthrough video of the vob-field-eval codebase, rendered locally.",
+  "scripts": {
+    "kt-video": "node build.mjs",
+    "render": "node render.mjs",
+    "preview": "node render.mjs --serve"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1"
+  }
+}

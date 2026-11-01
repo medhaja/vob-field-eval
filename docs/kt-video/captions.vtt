@@ -1,0 +1,197 @@
+WEBVTT
+
+1
+00:00:00.150 --> 00:00:04.500
+Benefits verification for ABA therapy isn't one answer.
+
+2
+00:00:04.720 --> 00:00:12.395
+Each case covers eight CPT codes, and each code has its own copay, auth rule, session limit and place of service.
+
+3
+00:00:12.615 --> 00:00:15.290
+That's sixty-eight scored fields per case.
+
+4
+00:00:15.510 --> 00:00:19.660
+Grade the whole case right or wrong, and you can't see which field broke.
+
+5
+00:00:19.880 --> 00:00:26.105
+Here, version one gets ninety-seven percent of fields right, but only twenty-two percent of cases.
+
+6
+00:00:26.325 --> 00:00:31.675
+So this prototype scores every field, and sends only the risky cases to a person.
+
+7
+00:00:32.425 --> 00:00:39.350
+On the write side, a seeded generator makes two hundred forty synthetic cases from four fictional payers.
+
+8
+00:00:39.570 --> 00:00:45.270
+An extractor reads each one with two prompt versions, and stores typed results in SQLite.
+
+9
+00:00:45.490 --> 00:00:52.715
+On the read side, validation, routing and scoring run when a page loads, cached until a gold label changes.
+
+10
+00:00:52.935 --> 00:00:57.660
+Only the extractor could be a model, through an optional LiteLLM path.
+
+11
+00:00:57.880 --> 00:01:01.355
+Everything else is plain, deterministic Python.
+
+12
+00:01:02.105 --> 00:01:03.955
+Let's follow one case.
+
+13
+00:01:04.175 --> 00:01:11.925
+The generator writes a portal-style document with noise, like a copay spelled out in words, and records where each value sits.
+
+14
+00:01:12.145 --> 00:01:15.495
+Then, extract_mock runs with prompt version two.
+
+15
+00:01:15.715 --> 00:01:23.940
+It returns a VOBResult, where every field carries a value, a confidence from zero to one, and the source span it came from.
+
+16
+00:01:24.690 --> 00:01:28.865
+Next, validate runs twelve rules against a per-payer table.
+
+17
+00:01:29.085 --> 00:01:32.210
+Deductible met can't exceed the deductible.
+
+18
+00:01:32.430 --> 00:01:35.355
+Auth must match the payer's rule for that code.
+
+19
+00:01:35.575 --> 00:01:37.350
+Then, route decides.
+
+20
+00:01:37.570 --> 00:01:44.545
+If any field is under the threshold, 0.8 by default, or any rule fails, the case goes to review.
+
+21
+00:01:44.765 --> 00:01:46.940
+Otherwise, it's auto-approved.
+
+22
+00:01:47.160 --> 00:01:49.310
+Flagged cases sort by risk.
+
+23
+00:01:49.530 --> 00:01:58.980
+At 0.8, version one auto-approves thirty-two percent of cases, and escaped errors fall from seventy-seven percent of cases to thirteen.
+
+24
+00:01:59.730 --> 00:02:05.455
+On the case page, source spans glow red for a failed rule, and amber for low confidence.
+
+25
+00:02:05.675 --> 00:02:09.025
+The reviewer fixes a value, and saves it as gold.
+
+26
+00:02:09.245 --> 00:02:15.420
+That write is append-only: a new row tagged human, with a timestamp, and the latest row wins.
+
+27
+00:02:15.640 --> 00:02:21.065
+The gold revision changes, so the cached snapshot rebuilds, and accuracy recomputes.
+
+28
+00:02:21.815 --> 00:02:29.190
+Scoring is exact match after normalization, so twenty-five dollars and twenty-five point zero zero are equal.
+
+29
+00:02:29.410 --> 00:02:34.235
+For A/B, a seeded hash of the case ID splits cases fifty-fifty.
+
+30
+00:02:34.455 --> 00:02:39.480
+The bootstrap resamples whole cases, because fields within a case are correlated.
+
+31
+00:02:39.700 --> 00:02:43.275
+Version two fixes session limits and place of service.
+
+32
+00:02:43.495 --> 00:02:47.245
+But copay drops thirty-nine points for one payer, Northwind.
+
+33
+00:02:47.465 --> 00:02:50.415
+Averaged across payers, that looks modest.
+
+34
+00:02:50.635 --> 00:02:53.360
+Any significant regression means hold.
+
+35
+00:02:54.110 --> 00:02:56.260
+To run it, type make demo.
+
+36
+00:02:56.480 --> 00:03:03.655
+It generates the data, runs both versions, and serves the UI on port eight thousand, with no API keys.
+
+37
+00:03:03.875 --> 00:03:05.600
+Now, some gotchas.
+
+38
+00:03:05.820 --> 00:03:08.270
+The mock extractor isn't a model.
+
+39
+00:03:08.490 --> 00:03:14.790
+It starts from the gold labels and injects seeded errors, so its numbers say nothing about a real system.
+
+40
+00:03:15.010 --> 00:03:17.360
+Make demo wipes reviewer labels.
+
+41
+00:03:17.580 --> 00:03:20.230
+Human labels get no second review.
+
+42
+00:03:20.450 --> 00:03:25.575
+And escaped errors are counted against all cases, not just auto-approved ones.
+
+43
+00:03:26.325 --> 00:03:27.800
+To recap.
+
+44
+00:03:28.020 --> 00:03:30.095
+Score fields, not cases.
+
+45
+00:03:30.315 --> 00:03:32.515
+Route on confidence and rules.
+
+46
+00:03:32.735 --> 00:03:35.010
+Reviewer fixes become gold.
+
+47
+00:03:35.230 --> 00:03:39.405
+Compare prompts per payer, so regressions can't hide in averages.
+
+48
+00:03:39.625 --> 00:03:50.825
+Next steps: calibrated thresholds per field, weighting errors by billing impact, double review of human labels, and the same eval on real, de-identified model output.
+
+49
+00:03:51.575 --> 00:03:53.300
+Thank you for watching.

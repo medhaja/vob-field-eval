@@ -1,0 +1,9 @@
+0:00 Why it exists
+0:32 Architecture
+1:01 Trace: extraction
+1:24 Trace: routing
+1:59 Trace: review
+2:21 Eval & A/B
+2:53 Run it & gotchas
+3:26 Recap
+3:51 Thank you
